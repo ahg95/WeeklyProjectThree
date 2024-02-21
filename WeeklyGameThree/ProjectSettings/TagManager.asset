@@ -3,12 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - MagicShape
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - PlayerModel
   - Water
   - UI
   - 
@@ -38,6 +39,12 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Floor
+    uniqueID: 1447654215
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Magic
+    uniqueID: 1597174841
     locked: 0
