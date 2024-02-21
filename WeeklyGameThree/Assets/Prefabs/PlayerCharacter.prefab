@@ -164,9 +164,9 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!58 &3193713805222235802
 CircleCollider2D:
@@ -216,5 +216,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rigidbody: {fileID: 3254942874738762373}
-  _movementSpeed: 5
   _recorder: {fileID: 0}
+  _camera: {fileID: 0}
+  _maxSpeed: 5
+  _accelerationFactor: 1
+  _acceleration:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -1
+      value: 1
+      inSlope: -1.3442593
+      outSlope: -1.3442593
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.084965974
+    - serializedVersion: 3
+      time: 1
+      value: 0.05
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.08879548
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
