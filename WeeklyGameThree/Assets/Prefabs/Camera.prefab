@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5268738547006729694}
   - component: {fileID: 6627054103683995812}
   - component: {fileID: 5065017729456397120}
+  - component: {fileID: 2713152773901420743}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -74,7 +75,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 55
+    m_Bits: 247
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -152,7 +153,36 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _camera: {fileID: 3515602701220901497}
   _target: {fileID: 0}
-  _RoomCollider: {fileID: 0}
-  _targetOffset: {x: 5, y: 0}
-  _smoothTime: 0.2
+  _minBounds: {fileID: 11400000, guid: b1d739466ea533842ac014d263280d09, type: 2}
+  _maxBounds: {fileID: 11400000, guid: 11689a89908d047428698282f7ad198b, type: 2}
+  _targetOffset: {x: 3, y: 0}
+  _smoothTime: 0.1
   _maxSpeed: 100
+--- !u!114 &2713152773901420743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5339434465333073529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa2531a6937dc41469a12ac36bafe226, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _gameEvent: {fileID: 11400000, guid: cd1444ddc2711424793d80d37b289ef0, type: 2}
+  _respone:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5065017729456397120}
+        m_TargetAssemblyTypeName: CameraController, Assembly-CSharp
+        m_MethodName: SnapToTarget
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
