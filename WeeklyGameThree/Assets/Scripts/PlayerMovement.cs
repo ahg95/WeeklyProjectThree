@@ -17,6 +17,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     Camera _camera;
 
+    [Header("Variables")]
+    [SerializeField]
+    Vector3Variable _spawnPosition;
+
     [Header("Movement parameters")]
     [SerializeField]
     [Range(1, 1000)]
@@ -29,6 +33,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     AnimationCurve _acceleration;
 
+    bool _controlsAreEnabled = true;
 
     PlayerInput _playerInput;
 
@@ -53,7 +58,11 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (Mouse.current.leftButton.isPressed)
+        if (!_controlsAreEnabled)
+        {
+            _movementInput = Vector2.zero;
+
+        } else if (Mouse.current.leftButton.isPressed)
         {
             // Transform the mouse position to an input vector
             // - Check where the player has clicked on the ground
@@ -77,8 +86,6 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         _rigidbody.velocity = CalculateNextVelocity(_movementInput, _rigidbody.velocity);
-
-        _recorder.SetPlayerMovementVector(_rigidbody.velocity);
     }
 
     Vector2 CalculateNextVelocity(Vector2 input, Vector2 currentVelocity)
@@ -140,5 +147,21 @@ public class PlayerMovement : MonoBehaviour
 
 
         return nextVelocity;
+    }
+
+    public void DisableControls()
+    {
+        _controlsAreEnabled = false;
+    }
+
+    public void EnableControls()
+    {
+        _controlsAreEnabled = true;
+    }
+
+    public void TeleportToSpawnPoint()
+    {
+        transform.position = _spawnPosition.RuntimeValue;
+        _rigidbody.velocity = Vector2.zero;
     }
 }
