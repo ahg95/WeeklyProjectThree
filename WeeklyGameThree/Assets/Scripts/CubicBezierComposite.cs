@@ -1,7 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteAlways]
 public class CubicBezierComposite : MonoBehaviour
 {
     public bool _IsCyclic;
@@ -12,6 +12,48 @@ public class CubicBezierComposite : MonoBehaviour
     public List<CubicBezier> _Curves;
 
     bool _isSetup;
+
+    Vector3 _offset;
+    float _angle;
+
+    private void Update()
+    {
+        if (!transform.hasChanged)
+            return;
+
+
+        SetupIfNecessary();
+
+
+
+        // Round the position of this object
+        transform.position = RoundVector(transform.position);
+
+
+
+        // Apply the rotation and position of this transform to all curve points
+        foreach (var curve in _Curves)
+        {
+            for (int i = 0; i < curve._Points.Length; i++)
+            {
+                // Subtract the previous offset
+                curve._Points[i] -= _offset;
+
+                // Subtract the previous rotation
+                curve._Points[i] = Quaternion.AngleAxis(-_angle, Vector3.forward) * curve._Points[i];
+
+                // Add the new rotation
+                curve._Points[i] = Quaternion.AngleAxis(transform.rotation.eulerAngles.z, Vector3.forward) * curve._Points[i];
+
+                // Add the new offset
+                curve._Points[i] += transform.position;
+            }
+        }
+
+        // - Store the applied offset and rotation
+        _offset = transform.position;
+        _angle = transform.rotation.eulerAngles.z;
+    }
 
     public Vector3 Evaluate(float t)
     {
@@ -84,17 +126,19 @@ public class CubicBezierComposite : MonoBehaviour
     {
         foreach (var curve in _Curves)
             for (int i = 0; i < curve._Points.Length; i++)
-                RoundVector(ref curve._Points[i]);
+                curve._Points[i] = RoundVector(curve._Points[i]);
 
         EnforceConstraints();
     }
 
-    void RoundVector(ref Vector3 vector)
+    Vector3 RoundVector(Vector3 vector)
     {
         const float multiplier = 2f;
 
         vector.x = Mathf.Round(vector.x * multiplier) / multiplier;
         vector.y = Mathf.Round(vector.y * multiplier) / multiplier;
         vector.z = Mathf.Round(vector.z * multiplier) / multiplier;
+
+        return vector;
     }
 }

@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
-using UnityEditor.PackageManager.UI;
 using UnityEngine;
 
 [CustomEditor(typeof(CubicBezierComposite))]
@@ -10,26 +6,29 @@ public class CubicBezierCompositeEditor : Editor
 {
     private void OnSceneGUI()
     {
+        // Visualize each curve and create handles for them
+
         var composite = (CubicBezierComposite)target;
 
         for (int i = 0; i < composite._Curves.Count; i++)
         {
             var curve = composite._Curves[i];
 
-
-
-            // Draw the first point of each curve
             var firstPoint = curve._Points[0];
             var secondPoint = curve._Points[1];
+
+
+            // Create handle for the first point
 
             float size = HandleUtility.GetHandleSize(firstPoint) * 0.4f;
             Vector3 snap = Vector3.one * 0.5f;
 
-            EditorGUI.BeginChangeCheck();
-
             Handles.color = Color.blue;
             if (i == 0)
                 Handles.color = Color.white;
+
+            EditorGUI.BeginChangeCheck();
+
             Vector3 newPosition = Handles.FreeMoveHandle(firstPoint, size, snap, Handles.SphereHandleCap);
 
             if (EditorGUI.EndChangeCheck())
@@ -37,7 +36,7 @@ public class CubicBezierCompositeEditor : Editor
                 curve._Points[0] = newPosition;
                 curve._Points[1] = newPosition + (secondPoint - firstPoint);
 
-                // If this is the first curve, and the composite is cyclic then adjust the points of the last curve as well.
+                // If this is the first curve, and the composite is cyclic, then adjust the points of the last curve as well.
                 if (composite._IsCyclic && i == 0)
                 {
                     var lastCurve = composite._Curves[composite._Curves.Count - 1];
@@ -59,17 +58,17 @@ public class CubicBezierCompositeEditor : Editor
 
 
 
-            // Draw the second point of each curve
+            // Create handle for second curve point
             size = HandleUtility.GetHandleSize(secondPoint) * 0.2f;
             snap = Vector3.one * 0.5f;
+
+            Handles.color = Color.grey;
+            Handles.DrawLine(firstPoint, secondPoint, 5);
 
             EditorGUI.BeginChangeCheck();
 
             Handles.color = Color.green;
             newPosition = Handles.FreeMoveHandle(secondPoint, size, snap, Handles.SphereHandleCap);
-
-            Handles.color = Color.grey;
-            Handles.DrawLine(firstPoint, secondPoint, 5);
 
             if (EditorGUI.EndChangeCheck())
             {
@@ -94,7 +93,6 @@ public class CubicBezierCompositeEditor : Editor
 
 
             // If the composite is not cyclic and it is the last curve then draw the last point
-            // Draw the first point of each curve
             if (!composite._IsCyclic && i == composite._Curves.Count - 1)
             {
                 var lastPoint = curve._Points[3];
