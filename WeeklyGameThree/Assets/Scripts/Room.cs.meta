@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 552cee87d44b9d645978e905e00f9aa8
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _spawnPoint: {instanceID: 0}
+  - _spawnPosition: {instanceID: 0}
+  - _cameraBoundsMin: {instanceID: 0}
+  - _cameraBoundsMax: {instanceID: 0}
+  - _activeMagicShapes: {fileID: 11400000, guid: 1da7873ef69904647932212006af1994, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
