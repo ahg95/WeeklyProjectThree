@@ -16,6 +16,11 @@ public class CubicBezierComposite : MonoBehaviour
     Vector3 _offset;
     float _angle;
 
+    private void Awake()
+    {
+        _offset = transform.position;
+    }
+
     private void Update()
     {
         if (!transform.hasChanged)
