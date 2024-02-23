@@ -5,28 +5,46 @@ using UnityEngine;
 public class PlayerRecorder : MonoBehaviour
 {
     [SerializeField]
+    Rigidbody2D _playerRigidbody;
+
+    [SerializeField]
     Transform _playerModel;
 
     [SerializeField]
     Animator _animator;
 
-    Vector2 _lastMovementDirection;
+    bool _isDying;
 
-    public void SetPlayerMovementVector(Vector2 movement)
+    private void Update()
+    {
+        if (!_isDying)
+        {
+            ShowPlayerAnimationForMovement(_playerRigidbody.velocity);
+        }
+    }
+
+    void ShowPlayerAnimationForMovement(Vector2 movement)
     {
         // Rotate player model
-        var angle = Mathf.Atan2(movement.x, movement.y) * Mathf.Rad2Deg;
-
-        if (movement == Vector2.zero)
-            angle = Mathf.Atan2(_lastMovementDirection.x, _lastMovementDirection.y) * Mathf.Rad2Deg;
-        else
-            _lastMovementDirection = movement;
-
-        _playerModel.rotation = Quaternion.AngleAxis(angle, Vector3.up);
-
-
+        if (movement != Vector2.zero)
+        {
+            var angle = Mathf.Atan2(movement.x, movement.y) * Mathf.Rad2Deg;
+            _playerModel.rotation = Quaternion.AngleAxis(angle, Vector3.up);
+        }
 
         // Set movement speed
         _animator.SetFloat("MovementSpeed", movement.magnitude);
+    }
+
+    public void StartDying()
+    {
+        _animator.SetBool("Dead", true);
+        _isDying = true;
+    }
+
+    public void StopDying()
+    {
+        _animator.SetBool("Dead", false);
+        _isDying = false;
     }
 }

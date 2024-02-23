@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1417053387368040745}
   - component: {fileID: 6598243871761761700}
+  - component: {fileID: 4589422020312619380}
+  - component: {fileID: 3329323893932985114}
   m_Layer: 0
   m_Name: PlayerRecorder
   m_TagString: Untagged
@@ -46,8 +48,65 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 349217a29c0a7784695b60ed13eff70f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerRigidbody: {fileID: 0}
   _playerModel: {fileID: 3035183842069119681}
   _animator: {fileID: 5782724716233743985}
+--- !u!114 &4589422020312619380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1765634491896385689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa2531a6937dc41469a12ac36bafe226, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _gameEvent: {fileID: 11400000, guid: bdd7a943dcf499b49a35c17b61edac07, type: 2}
+  _respone:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6598243871761761700}
+        m_TargetAssemblyTypeName: PlayerRecorder, Assembly-CSharp
+        m_MethodName: StartDying
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &3329323893932985114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1765634491896385689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa2531a6937dc41469a12ac36bafe226, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _gameEvent: {fileID: 11400000, guid: cd1444ddc2711424793d80d37b289ef0, type: 2}
+  _respone:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6598243871761761700}
+        m_TargetAssemblyTypeName: PlayerRecorder, Assembly-CSharp
+        m_MethodName: StopDying
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7294896339284291421
 GameObject:
   m_ObjectHideFlags: 0
