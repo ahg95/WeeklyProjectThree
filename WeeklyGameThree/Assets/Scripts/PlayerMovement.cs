@@ -48,11 +48,11 @@ public class PlayerMovement : MonoBehaviour
 
     PlayerInput _playerInput;
 
-    bool _controlsAreEnabled = true;
-
     Vector2 _movementInput;
 
     Plane _groundPlane = new Plane(Vector3.back, Vector3.zero);
+
+    Vector2 _velocityBeforeDash;
 
     private void Awake()
     {
@@ -85,6 +85,7 @@ public class PlayerMovement : MonoBehaviour
         if (_playerInput.Player.Dash.WasPressedThisFrame() && _dashStartTime + _dashCooldown < Time.time)
         {
             _dashStartTime = Time.time;
+            _velocityBeforeDash = _rigidbody.velocity;
             _rigidbody.velocity = _facingDirection.normalized * _dashSpeed;
         }
 
@@ -115,9 +116,11 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         // Do not convert the movement input to a velocity if the player is dashing
-        if (_dashStartTime + _dashDuration > Time.time)
+        if (_dashStartTime + _dashDuration > Time.fixedTime)
             return;
-
+        // Revert the velocity if the dash just ended
+        else if (_dashStartTime + _dashDuration + Time.fixedDeltaTime > Time.fixedTime)
+            _rigidbody.velocity = _velocityBeforeDash;
 
 
         // Convert the movement input to a velocity
@@ -186,16 +189,6 @@ public class PlayerMovement : MonoBehaviour
 
 
         return nextVelocity;
-    }
-
-    public void DisableControls()
-    {
-        _controlsAreEnabled = false;
-    }
-
-    public void EnableControls()
-    {
-        _controlsAreEnabled = true;
     }
 
     public void Respawn()
