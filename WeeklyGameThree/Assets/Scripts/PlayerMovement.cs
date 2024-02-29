@@ -17,7 +17,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     Vector3Variable _spawnPosition;
 
-
+    [SerializeField]
+    BoolVariable _playerControlsEnabled;
 
     [Header("Movement parameters")]
     [SerializeField]
@@ -30,8 +31,6 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField]
     AnimationCurve _acceleration;
-
-
 
     [Header("Dashing")]
     [SerializeField]
@@ -47,13 +46,9 @@ public class PlayerMovement : MonoBehaviour
 
     Vector2 _facingDirection;
 
-
-
     PlayerInput _playerInput;
 
     bool _controlsAreEnabled = true;
-
-
 
     Vector2 _movementInput;
 
@@ -78,7 +73,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (!_controlsAreEnabled)
+        if (!_playerControlsEnabled.RuntimeValue)
         {
             _movementInput = Vector2.zero;
             return;

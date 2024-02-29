@@ -16,6 +16,9 @@ public class PlayerRecallAbility : MonoBehaviour
     [SerializeField]
     Transform _marker;
 
+    [SerializeField]
+    BoolVariable _playerControlsEnabled;
+
     [Header("Parameters")]
     [SerializeField]
     float _cooldown;
@@ -53,7 +56,7 @@ public class PlayerRecallAbility : MonoBehaviour
 
 
         // Handle recalling
-        if (_playerInput.Player.Recall.WasPressedThisFrame() && _recallStartTime + _cooldown < Time.time)
+        if (_playerControlsEnabled.RuntimeValue && _playerInput.Player.Recall.WasPressedThisFrame() && _recallStartTime + _cooldown < Time.time)
             Recall();
     }
 

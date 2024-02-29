@@ -2168,12 +2168,6 @@ MonoBehaviour:
     - {x: 69.5, y: 11, z: 0}
     - {x: 55, y: 11, z: 0}
     - {x: 54, y: 10, z: 0}
-  _curveLengths:
-  - 16.263832
-  - 31.747715
-  - 16.263832
-  - 31.747711
-  _lengthIsUpToDate: 1
 --- !u!1 &179300943 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7562158119435284434, guid: 91e8fb4dedfb7f348a0a344870b6c71f, type: 3}
@@ -2236,10 +2230,6 @@ MonoBehaviour:
     - {x: 0, y: 0, z: 0}
     - {x: 0, y: 0, z: 0}
     - {x: 0, y: 0, z: 0}
-  _curveLengths:
-  - 0
-  - 0
-  _lengthIsUpToDate: 1
 --- !u!1 &253843408
 GameObject:
   m_ObjectHideFlags: 0
@@ -8983,10 +8973,6 @@ MonoBehaviour:
     - {x: 35.5, y: 8.5, z: 0}
     - {x: 35.5, y: 3.5, z: 0}
     - {x: 32, y: 3.5, z: 0}
-  _curveLengths:
-  - 12.090055
-  - 12.0900545
-  _lengthIsUpToDate: 1
 --- !u!1001 &1039480602
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18488,10 +18474,6 @@ PrefabInstance:
       propertyPath: _marker
       value: 
       objectReference: {fileID: 1437971661}
-    - target: {fileID: 6862269010123460121, guid: 65ee17afeea8c9b458ea0e5ea558e418, type: 3}
-      propertyPath: _cooldown
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 6883816239353727574, guid: 65ee17afeea8c9b458ea0e5ea558e418, type: 3}
       propertyPath: m_Name
       value: PlayerCharacter
