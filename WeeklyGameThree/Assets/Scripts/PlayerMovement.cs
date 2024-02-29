@@ -44,7 +44,7 @@ public class PlayerMovement : MonoBehaviour
 
     float _dashStartTime;
 
-    Vector2 _facingDirection;
+    Vector2 _dashDirection;
 
     PlayerInput _playerInput;
 
@@ -52,7 +52,7 @@ public class PlayerMovement : MonoBehaviour
 
     Plane _groundPlane = new Plane(Vector3.back, Vector3.zero);
 
-    Vector2 _velocityBeforeDash;
+    float _speedBeforeDash;
 
     private void Awake()
     {
@@ -80,17 +80,6 @@ public class PlayerMovement : MonoBehaviour
         }
 
 
-
-        // Handle dashing
-        if (_playerInput.Player.Dash.WasPressedThisFrame() && _dashStartTime + _dashCooldown < Time.time)
-        {
-            _dashStartTime = Time.time;
-            _velocityBeforeDash = _rigidbody.velocity;
-            _rigidbody.velocity = _facingDirection.normalized * _dashSpeed;
-        }
-
-
-
         // Read movement input
         if (Mouse.current.leftButton.isPressed)
         {
@@ -111,6 +100,21 @@ public class PlayerMovement : MonoBehaviour
         {
             _movementInput = _playerInput.Player.Move.ReadValue<Vector2>();
         }
+
+
+
+        if (_movementInput != Vector2.zero)
+            _dashDirection = _movementInput;
+
+
+
+        // Handle dashing
+        if (_playerInput.Player.Dash.WasPressedThisFrame() && _dashStartTime + _dashCooldown < Time.time)
+        {
+            _dashStartTime = Time.time;
+            _speedBeforeDash = _rigidbody.velocity.magnitude;
+            _rigidbody.velocity = _dashDirection.normalized * _dashSpeed;
+        }
     }
 
     private void FixedUpdate()
@@ -120,14 +124,11 @@ public class PlayerMovement : MonoBehaviour
             return;
         // Revert the velocity if the dash just ended
         else if (_dashStartTime + _dashDuration + Time.fixedDeltaTime > Time.fixedTime)
-            _rigidbody.velocity = _velocityBeforeDash;
+            _rigidbody.velocity = _rigidbody.velocity.normalized * _speedBeforeDash;
 
 
         // Convert the movement input to a velocity
         _rigidbody.velocity = CalculateNextVelocity(_movementInput, _rigidbody.velocity);
-
-        if (_rigidbody.velocity != Vector2.zero)
-            _facingDirection = _rigidbody.velocity;
     }
 
     Vector2 CalculateNextVelocity(Vector2 input, Vector2 currentVelocity)
@@ -182,9 +183,10 @@ public class PlayerMovement : MonoBehaviour
 
         // - Always decelerate in the perpendicular direction
         var curveXPerp = -Mathf.Abs(velInTargetDir) / _maxSpeed;
-        var velocityChangePerp = Mathf.Min(_acceleration.Evaluate(curveXPerp) * _accelerationFactor * _maxSpeed, velInPerpDir);
 
-        nextVelocity -= perpDirection.normalized * velocityChangePerp;
+        var velocityChangePerp = Mathf.Min(_acceleration.Evaluate(curveXPerp) * _accelerationFactor * _maxSpeed, Mathf.Abs(velInPerpDir));
+
+        nextVelocity += perpDirection.normalized * (velInPerpDir > 0 ? -velocityChangePerp : velocityChangePerp);
 
 
 
