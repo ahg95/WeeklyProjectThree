@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Profiling;
-using static UnityEngine.GraphicsBuffer;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -21,6 +17,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     Vector3Variable _spawnPosition;
 
+
+
     [Header("Movement parameters")]
     [SerializeField]
     [Range(1, 1000)]
@@ -33,9 +31,29 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     AnimationCurve _acceleration;
 
-    bool _controlsAreEnabled = true;
+
+
+    [Header("Dashing")]
+    [SerializeField]
+    float _dashDuration;
+
+    [SerializeField]
+    float _dashSpeed;
+
+    [SerializeField]
+    float _dashCooldown;
+
+    float _dashStartTime;
+
+    Vector2 _facingDirection;
+
+
 
     PlayerInput _playerInput;
+
+    bool _controlsAreEnabled = true;
+
+
 
     Vector2 _movementInput;
 
@@ -44,6 +62,8 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         _playerInput = new PlayerInput();
+
+        _dashStartTime = -Mathf.Infinity;
     }
 
     private void OnEnable()
@@ -61,8 +81,22 @@ public class PlayerMovement : MonoBehaviour
         if (!_controlsAreEnabled)
         {
             _movementInput = Vector2.zero;
+            return;
+        }
 
-        } else if (Mouse.current.leftButton.isPressed)
+
+
+        // Handle dashing
+        if (_playerInput.Player.Dash.WasPressedThisFrame() && _dashStartTime + _dashCooldown < Time.time)
+        {
+            _dashStartTime = Time.time;
+            _rigidbody.velocity = _facingDirection.normalized * _dashSpeed;
+        }
+
+
+
+        // Read movement input
+        if (Mouse.current.leftButton.isPressed)
         {
             // Transform the mouse position to an input vector
             // - Check where the player has clicked on the ground
@@ -85,7 +119,17 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // Do not convert the movement input to a velocity if the player is dashing
+        if (_dashStartTime + _dashDuration > Time.time)
+            return;
+
+
+
+        // Convert the movement input to a velocity
         _rigidbody.velocity = CalculateNextVelocity(_movementInput, _rigidbody.velocity);
+
+        if (_rigidbody.velocity != Vector2.zero)
+            _facingDirection = _rigidbody.velocity;
     }
 
     Vector2 CalculateNextVelocity(Vector2 input, Vector2 currentVelocity)
@@ -159,9 +203,11 @@ public class PlayerMovement : MonoBehaviour
         _controlsAreEnabled = true;
     }
 
-    public void TeleportToSpawnPoint()
+    public void Respawn()
     {
         transform.position = _spawnPosition.RuntimeValue;
         _rigidbody.velocity = Vector2.zero;
+
+        _dashStartTime = -Mathf.Infinity;
     }
 }

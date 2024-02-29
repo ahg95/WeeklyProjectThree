@@ -1,9 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
-using System.Security.Cryptography;
-using System.Xml;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -19,9 +14,11 @@ public class MagicShape : MonoBehaviour
     [SerializeField]
     bool _moves;
     [SerializeField]
+    bool _movesBackwards;
+    [SerializeField]
     CubicBezierComposite _path;
     [SerializeField]
-    int _movementCycles;
+    int _movementCycles = 1;
     [SerializeField]
     float _movementOffset;
 
@@ -29,7 +26,7 @@ public class MagicShape : MonoBehaviour
     [SerializeField]
     bool _rotates;
     [SerializeField]
-    int _rotationCycles;
+    int _rotationCycles = 1;
     [SerializeField]
     float _rotationOffset;
 
@@ -37,7 +34,7 @@ public class MagicShape : MonoBehaviour
     [SerializeField]
     bool _scales;
     [SerializeField]
-    int _scalingCycles;
+    int _scalingCycles = 1;
     [SerializeField]
     float _defaultScale;
     [SerializeField]
@@ -64,9 +61,11 @@ public class MagicShape : MonoBehaviour
         if (_moves && _path != null)
         {
             var t = _timer / GLOBALCYCLETIME * _movementCycles + _baseOffset + _movementOffset;
-            transform.position = _path.Evaluate(t);
 
-            // TODO: if the path is not cyclic: go it backwards
+            if (_movesBackwards)
+                t = 1 - t;
+
+            transform.position = _path.Evaluate(t);
         }
     }
 
@@ -107,6 +106,7 @@ public class MagicShape : MonoBehaviour
 
         // Movement
         SerializedProperty _movesProperty;
+        SerializedProperty _movesBackwardsProperty;
         SerializedProperty _pathProperty;
         SerializedProperty _movementCyclesProperty;
         SerializedProperty _movementOffsetProperty;
@@ -130,6 +130,7 @@ public class MagicShape : MonoBehaviour
 
             // Movement
             _movesProperty = serializedObject.FindProperty("_moves");
+            _movesBackwardsProperty = serializedObject.FindProperty("_movesBackwards");
             _pathProperty = serializedObject.FindProperty("_path");
             _movementCyclesProperty = serializedObject.FindProperty("_movementCycles");
             _movementOffsetProperty = serializedObject.FindProperty("_movementOffset");
@@ -162,6 +163,7 @@ public class MagicShape : MonoBehaviour
             {
                 EditorGUI.indentLevel = 1;
 
+                EditorGUILayout.PropertyField(_movesBackwardsProperty);
                 EditorGUILayout.PropertyField(_pathProperty);
                 EditorGUILayout.IntSlider(_movementCyclesProperty, 1, 10);
                 EditorGUILayout.Slider(_movementOffsetProperty, 0f, 1f);

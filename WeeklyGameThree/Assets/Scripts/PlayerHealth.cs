@@ -72,7 +72,6 @@ public class PlayerHealth : MonoBehaviour
         if (_currentHealth.RuntimeValue == 0)
         {
             _healthDepleted.Raise();
-            Debug.Log("Health depleted");
         }
     }
 
