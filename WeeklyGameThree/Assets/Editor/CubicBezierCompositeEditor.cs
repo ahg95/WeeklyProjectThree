@@ -52,6 +52,7 @@ public class CubicBezierCompositeEditor : Editor
                 }
 
                 composite.RoundCurvePointPositions();
+                composite.SetLengthAsDirty();
 
                 EditorUtility.SetDirty(composite);
             }
@@ -87,6 +88,7 @@ public class CubicBezierCompositeEditor : Editor
                 }
 
                 composite.RoundCurvePointPositions();
+                composite.SetLengthAsDirty();
 
                 EditorUtility.SetDirty(composite);
             }
@@ -111,6 +113,7 @@ public class CubicBezierCompositeEditor : Editor
                     curve._Points[3] = newPosition;
 
                     composite.RoundCurvePointPositions();
+                    composite.SetLengthAsDirty();
 
                     EditorUtility.SetDirty(composite);
                 }

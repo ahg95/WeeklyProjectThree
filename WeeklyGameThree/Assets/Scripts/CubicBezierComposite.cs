@@ -11,10 +11,22 @@ public class CubicBezierComposite : MonoBehaviour
 
     public List<CubicBezier> _Curves;
 
+    [SerializeField]
+    List<float> _curveLengths;
+
+    [SerializeField]
+    float _compositeLength;
+
+    [SerializeField]
+    bool _lengthIsUpToDate;
+
+    [SerializeField]
     bool _isSetup;
 
     Vector3 _offset;
-    float _angle;
+    float _rotationAngle;
+
+    
 
     private void Awake()
     {
@@ -45,7 +57,7 @@ public class CubicBezierComposite : MonoBehaviour
                 curve._Points[i] -= _offset;
 
                 // Subtract the previous rotation
-                curve._Points[i] = Quaternion.AngleAxis(-_angle, Vector3.forward) * curve._Points[i];
+                curve._Points[i] = Quaternion.AngleAxis(-_rotationAngle, Vector3.forward) * curve._Points[i];
 
                 // Add the new rotation
                 curve._Points[i] = Quaternion.AngleAxis(transform.rotation.eulerAngles.z, Vector3.forward) * curve._Points[i];
@@ -57,23 +69,54 @@ public class CubicBezierComposite : MonoBehaviour
 
         // - Store the applied offset and rotation
         _offset = transform.position;
-        _angle = transform.rotation.eulerAngles.z;
+        _rotationAngle = transform.rotation.eulerAngles.z;
     }
 
     public Vector3 Evaluate(float t)
     {
         SetupIfNecessary();
 
+        Debug.Log(t);
+
+        //if (t > 0.5f)
+        //    Debug.Log(_compositeLength);
+
+
         if (_Curves.Count == 0)
             return transform.position;
 
+
+        // Transform t to fit in [0,1)
         t = t % 1;
         if (t < 0)
             t++;
 
-        var curveSpan = 1.0f / _Curves.Count;
-        var curveIndex = Mathf.FloorToInt(t / curveSpan) % _Curves.Count;
-        t = Mathf.InverseLerp(curveIndex * curveSpan, (curveIndex + 1) * curveSpan, t);
+
+        // Calculate the index of the curve to evaluate
+        int curveIndex = 0;
+
+        float sumOfLengths = _curveLengths[0];
+
+        t *= _compositeLength;
+
+        while (sumOfLengths < t)
+        {
+            curveIndex++;
+            sumOfLengths += _curveLengths[curveIndex];
+        }
+
+
+
+        // Transform t again to fit in [0,1)
+        t = Mathf.InverseLerp(sumOfLengths - _curveLengths[curveIndex], sumOfLengths, t);
+
+        for (int i = 0; i < _Curves.Count; i++)
+        {
+            sumOfLengths += _curveLengths[i];
+        }
+
+
+        // Evaluate the curve
         return _Curves[curveIndex].Evaluate(t);
     }
 
@@ -83,12 +126,16 @@ public class CubicBezierComposite : MonoBehaviour
         _isSetup = false;
 
         SetupIfNecessary();
+
+        UpdateCurveLengthsIfNecessary();
     }
 
     void SetupIfNecessary()
     {
         if (_isSetup)
             return;
+
+        Debug.Log("Setting up");
 
         if (_Curves == null)
             _Curves = new();
@@ -98,11 +145,13 @@ public class CubicBezierComposite : MonoBehaviour
         while (_Curves.Count > _numberOfCurves)
         {
             _Curves.RemoveAt(_Curves.Count - 1);
+            SetLengthAsDirty();
         }
 
         while (_Curves.Count < _numberOfCurves)
         {
             _Curves.Add(new CubicBezier());
+            SetLengthAsDirty();
         }
 
         EnforceConstraints();
@@ -122,7 +171,6 @@ public class CubicBezierComposite : MonoBehaviour
 
                 curve._Points[3] = nextCurve._Points[0];
                 curve._Points[2] = 2 * curve._Points[3] - nextCurve._Points[1];
-
             }
         }
     }
@@ -145,5 +193,43 @@ public class CubicBezierComposite : MonoBehaviour
         vector.z = Mathf.Round(vector.z * multiplier) / multiplier;
 
         return vector;
+    }
+
+    public void SetLengthAsDirty()
+    {
+        _lengthIsUpToDate = false;
+    }
+
+    void UpdateCurveLengthsIfNecessary()
+    {
+        if (_lengthIsUpToDate)
+            return;
+
+
+
+        // Setup list
+        if (_curveLengths == null)
+            _curveLengths = new();
+        else
+            _curveLengths.Clear();
+
+
+
+        // Calculate lengths and complete length of composite
+        _compositeLength = 0;
+
+        for (int i = 0; i < _Curves.Count; i++)
+        {
+            var length = _Curves[i].CalculateLength(100);
+
+            _curveLengths.Add(length);
+
+            _compositeLength += length;
+        }
+
+
+
+        // Save that length is up to date
+        _lengthIsUpToDate = true;
     }
 }
