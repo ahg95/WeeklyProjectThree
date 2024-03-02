@@ -20,6 +20,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     BoolVariable _playerControlsEnabled;
 
+    [SerializeField]
+    BoolVariable _playerIsDodging;
+
     [Header("Movement parameters")]
     [SerializeField]
     [Range(1, 1000)]
@@ -114,6 +117,7 @@ public class PlayerMovement : MonoBehaviour
             _dashStartTime = Time.time;
             _speedBeforeDash = _rigidbody.velocity.magnitude;
             _rigidbody.velocity = _dashDirection.normalized * _dashSpeed;
+            _playerIsDodging.RuntimeValue = true;
         }
     }
 
@@ -124,7 +128,10 @@ public class PlayerMovement : MonoBehaviour
             return;
         // Revert the velocity if the dash just ended
         else if (_dashStartTime + _dashDuration + Time.fixedDeltaTime > Time.fixedTime)
+        {
             _rigidbody.velocity = _rigidbody.velocity.normalized * _speedBeforeDash;
+            _playerIsDodging.RuntimeValue = false;
+        }
 
 
         // Convert the movement input to a velocity
