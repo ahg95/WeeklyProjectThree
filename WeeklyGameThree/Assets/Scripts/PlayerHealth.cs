@@ -49,7 +49,7 @@ public class PlayerHealth : MonoBehaviour
         for (int i = 0; i < _magicShapes.Count; i++)
         {
             var magicShape = _magicShapes.Get(i);
-            if (magicShape.OverlapPoint(checkPosition))
+            if (magicShape.gameObject.activeInHierarchy && magicShape.OverlapPoint(checkPosition))
                 numberOfOverlappingShapes++;
 
             numberOfOverlappingShapes += GetComponent<Collider>() ? 1 : 0;
