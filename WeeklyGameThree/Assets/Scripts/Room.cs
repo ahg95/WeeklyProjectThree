@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -20,20 +21,30 @@ public class Room : MonoBehaviour
     [SerializeField]
     Collider2DRuntimeSet _activeMagicShapes;
 
-    [SerializeField]
-    Transform _magicShapesContainer;
-
     BoxCollider2D _collider;
 
-    Collider2D[] _magicShapes;
+    List<Collider2D> _magicShapes;
 
     private void Awake()
     {
+        // Adjust collider
         _collider = GetComponent<BoxCollider2D>();
 
         AdjustColliderSizeToTilemaps();
 
-        _magicShapes = _magicShapesContainer.GetComponentsInChildren<Collider2D>();
+
+
+        // Find magic shapes
+        // - Also find inactive magic shapes
+        var colliders = GetComponentsInChildren<Collider2D>(true);
+
+        var magicLayerIndex = LayerMask.NameToLayer("Magic");
+
+        _magicShapes = new();
+
+        foreach (var collider in colliders)
+            if (collider.gameObject.layer == magicLayerIndex)
+                _magicShapes.Add(collider);
     }
 
     void AdjustColliderSizeToTilemaps()
@@ -95,6 +106,7 @@ public class Room : MonoBehaviour
 
             // Update magic shapes
             _activeMagicShapes.Clear();
+
             foreach (var shape in _magicShapes)
                 _activeMagicShapes.Add(shape);
         }

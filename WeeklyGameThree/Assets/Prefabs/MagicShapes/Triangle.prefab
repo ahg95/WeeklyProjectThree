@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7566133247683287815}
   - component: {fileID: 1826178312757019940}
   - component: {fileID: 1692355296249688743}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Triangle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _baseOffset: 0
   _moves: 0
+  _movesBackwards: 0
   _path: {fileID: 0}
   _movementCycles: 1
   _movementOffset: 0
