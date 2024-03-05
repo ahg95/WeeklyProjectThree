@@ -1,25 +1,17 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMover : MonoBehaviour
 {
     [Header("References")]
     [SerializeField]
     Rigidbody2D _rigidbody;
 
-    [SerializeField]
-    PlayerRecorder _recorder;
-
+    // Used for reading movement input when using the mouse
     [SerializeField]
     Camera _camera;
 
     [Header("Variables")]
-    [SerializeField]
-    Vector3Variable _spawnPosition;
-
-    [SerializeField]
-    BoolVariable _playerControlsEnabled;
-
     [SerializeField]
     BoolVariable _playerIsDodging;
 
@@ -49,20 +41,25 @@ public class PlayerMovement : MonoBehaviour
 
     Vector2 _dashDirection;
 
+    float _speedBeforeDash;
+
     PlayerInput _playerInput;
 
     Vector2 _movementInput;
 
     Plane _groundPlane = new Plane(Vector3.back, Vector3.zero);
 
-    float _speedBeforeDash;
+    [HideInInspector]
+    public bool _ListenToInput;
 
     private void Awake()
     {
         _playerInput = new PlayerInput();
 
-        _dashStartTime = -Mathf.Infinity;
+        ResetDashCooldown();
     }
+
+    public void ResetDashCooldown() => _dashStartTime = -Mathf.Infinity;
 
     private void OnEnable()
     {
@@ -72,18 +69,22 @@ public class PlayerMovement : MonoBehaviour
     private void OnDisable()
     {
         _playerInput.Disable();
+
+        _movementInput = Vector2.zero;
     }
 
     void Update()
     {
-        if (!_playerControlsEnabled.RuntimeValue)
+        if (!_ListenToInput)
         {
             _movementInput = Vector2.zero;
             return;
         }
 
 
+
         // Read movement input
+        // - If the player is using the mouse, take the mouse position as movement input
         if (Mouse.current.leftButton.isPressed)
         {
             // Transform the mouse position to an input vector
@@ -99,19 +100,20 @@ public class PlayerMovement : MonoBehaviour
             var delta = clickedPosition - transform.position;
             _movementInput = delta.normalized * Mathf.InverseLerp(minDistance, maxDistance, delta.magnitude);
 
-        } else
+        }
+        else
         {
             _movementInput = _playerInput.Player.Move.ReadValue<Vector2>();
         }
 
 
-
+        // Update the direction to dash into
         if (_movementInput != Vector2.zero)
             _dashDirection = _movementInput;
 
 
 
-        // Handle dashing
+        // Dash
         if (_playerInput.Player.Dash.WasPressedThisFrame() && _dashStartTime + _dashCooldown < Time.time)
         {
             _dashStartTime = Time.time;
@@ -198,13 +200,5 @@ public class PlayerMovement : MonoBehaviour
 
 
         return nextVelocity;
-    }
-
-    public void Respawn()
-    {
-        transform.position = _spawnPosition.RuntimeValue;
-        _rigidbody.velocity = Vector2.zero;
-
-        _dashStartTime = -Mathf.Infinity;
     }
 }
