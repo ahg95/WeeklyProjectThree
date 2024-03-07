@@ -5,7 +5,7 @@ using UnityEngine;
 public class BezierCurveTest : MonoBehaviour
 {
     [SerializeField]
-    Transform _toMove;
+    UnityEngine.Transform _toMove;
 
     [SerializeField]
     CubicBezierComposite _bezierComposite;
