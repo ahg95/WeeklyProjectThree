@@ -38,12 +38,15 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Ground
+    uniqueID: 653261675
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Player
-    uniqueID: 2542633481
-    locked: 0
   - name: Magic
     uniqueID: 1597174841
+    locked: 0
+  - name: Shootable
+    uniqueID: 2962454723
     locked: 0

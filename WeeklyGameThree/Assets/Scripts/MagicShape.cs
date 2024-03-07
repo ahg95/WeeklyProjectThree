@@ -16,7 +16,7 @@ public class MagicShape : MonoBehaviour
     [SerializeField]
     bool _movesBackwards;
     [SerializeField]
-    CubicBezierComposite _path;
+    Path _path;
     [SerializeField]
     int _movementCycles = 1;
     [SerializeField]

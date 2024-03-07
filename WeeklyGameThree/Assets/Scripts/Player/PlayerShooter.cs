@@ -121,6 +121,10 @@ public class PlayerShooter : MonoBehaviour
 
                 var delta = target.transform.position - transform.position;
 
+                // Filter by enabled
+                if (!target.gameObject.activeInHierarchy)
+                    continue;
+
                 // Filter by distance
                 var sqrDistance = Vector2.SqrMagnitude(delta);
 

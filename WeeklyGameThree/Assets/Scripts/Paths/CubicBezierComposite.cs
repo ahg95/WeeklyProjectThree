@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteAlways]
-public class CubicBezierComposite : MonoBehaviour
+public class CubicBezierComposite : Path
 {
     public bool _IsCyclic;
 
@@ -32,7 +32,7 @@ public class CubicBezierComposite : MonoBehaviour
 
 
         // Round the position of this object
-        transform.position = RoundVector(transform.position);
+        transform.position = transform.position.Round();
 
 
 
@@ -60,7 +60,7 @@ public class CubicBezierComposite : MonoBehaviour
         _angle = transform.rotation.eulerAngles.z;
     }
 
-    public Vector3 Evaluate(float t)
+    public override Vector3 Evaluate(float t)
     {
         SetupIfNecessary();
 
@@ -131,19 +131,8 @@ public class CubicBezierComposite : MonoBehaviour
     {
         foreach (var curve in _Curves)
             for (int i = 0; i < curve._Points.Length; i++)
-                curve._Points[i] = RoundVector(curve._Points[i]);
+                curve._Points[i] = curve._Points[i].Round();
 
         EnforceConstraints();
-    }
-
-    Vector3 RoundVector(Vector3 vector)
-    {
-        const float multiplier = 2f;
-
-        vector.x = Mathf.Round(vector.x * multiplier) / multiplier;
-        vector.y = Mathf.Round(vector.y * multiplier) / multiplier;
-        vector.z = Mathf.Round(vector.z * multiplier) / multiplier;
-
-        return vector;
     }
 }

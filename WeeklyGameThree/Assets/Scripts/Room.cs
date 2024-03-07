@@ -1,10 +1,13 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 [RequireComponent(typeof(BoxCollider2D))]
 public class Room : MonoBehaviour
 {
+    static Room _activeRoom;
+
     [SerializeField]
     Transform _spawnPoint;
 
@@ -21,9 +24,14 @@ public class Room : MonoBehaviour
     [SerializeField]
     Collider2DRuntimeSet _activeMagicShapes;
 
+    [SerializeField]
+    ShootableRuntimeSet _activeShootables;
+
     BoxCollider2D _collider;
 
     List<Collider2D> _magicShapes;
+
+    List<Shootable> _shootables;
 
     private void Awake()
     {
@@ -45,6 +53,10 @@ public class Room : MonoBehaviour
         foreach (var collider in colliders)
             if (collider.gameObject.layer == magicLayerIndex)
                 _magicShapes.Add(collider);
+
+
+        // Find shootables in the room
+        _shootables = GetComponentsInChildren<Shootable>(true).ToList();
     }
 
     void AdjustColliderSizeToTilemaps()
@@ -92,12 +104,12 @@ public class Room : MonoBehaviour
 
     void UpdateVariablesIfPlayerInRoom(Collider2D collision)
     {
-        if (_collider.OverlapPoint(collision.transform.position) && collision.gameObject.tag == "Player")
+        if (_activeRoom != this && _collider.OverlapPoint(collision.transform.position) && collision.gameObject.tag == "Player")
         {
             // Update spawn position
             _spawnPosition.RuntimeValue = _spawnPoint.transform.position;
 
-            // Update bounds
+            // Update camera bounds
             var minBounds = new Vector2(_collider.bounds.min.x, _collider.bounds.min.y);
             var maxBounds = new Vector2(_collider.bounds.max.x, _collider.bounds.max.y);
 
@@ -109,6 +121,17 @@ public class Room : MonoBehaviour
 
             foreach (var shape in _magicShapes)
                 _activeMagicShapes.Add(shape);
+
+            // Update shootables
+            _activeShootables.Clear();
+
+            foreach (var shootable in _shootables)
+            {
+                _activeShootables.Add(shootable);
+            }
+
+            // Save this room to be the active one
+            _activeRoom = this;
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Shootable : MonoBehaviour
@@ -7,6 +8,8 @@ public class Shootable : MonoBehaviour
 
     static PlayerShooter _aimer;
 
+    public Action _WasShot;
+
     private void Awake()
     {
         _targetMarker.SetActive(false);
@@ -14,7 +17,7 @@ public class Shootable : MonoBehaviour
 
     public virtual void OnHit()
     {
-        Debug.Log("Has been hit!");
+        _WasShot?.Invoke();
     }
 
     private void OnEnable()
