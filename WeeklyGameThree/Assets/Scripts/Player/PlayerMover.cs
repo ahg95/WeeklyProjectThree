@@ -21,10 +21,6 @@ public class PlayerMover : MonoBehaviour
     float _maxSpeed;
 
     [SerializeField]
-    [Range(0, 1)]
-    float _accelerationFactor;
-
-    [SerializeField]
     AnimationCurve _acceleration;
 
     [Header("Dashing")]
@@ -137,65 +133,77 @@ public class PlayerMover : MonoBehaviour
 
 
         // Convert the movement input to a velocity
-        _rigidbody.velocity = CalculateNextVelocity(_movementInput, _rigidbody.velocity);
+        _rigidbody.velocity = CalculateNextVelocity(_movementInput, _rigidbody.velocity, _maxSpeed, _acceleration);
     }
 
-    Vector2 CalculateNextVelocity(Vector2 input, Vector2 currentVelocity)
+    public static Vector2 CalculateNextVelocity(Vector2 input, Vector2 currentVelocity, float maxSpeed, AnimationCurve acceleration)
     {
         if (input == Vector2.zero && currentVelocity == Vector2.zero)
             return Vector2.zero;
 
         Vector2 nextVelocity = currentVelocity;
 
-        var targetVelocity = input * _maxSpeed;
+        input = input / Mathf.Max(1, input.magnitude);
+
+        var targetVelocity = input * maxSpeed;
 
         // Move the next velocity along the direction of target velocity
 
         // - The current velocity in the target direction
-        var targetDirection = targetVelocity == Vector2.zero ? Vector2.up : targetVelocity.normalized;
+        
+        Vector2 mainDirection = targetVelocity == Vector2.zero ? Vector2.up : targetVelocity.normalized;
 
-        var velInTargetDir = currentVelocity.magnitude * Mathf.Cos(Vector2.Angle(targetDirection, currentVelocity) * Mathf.Deg2Rad);
+        /*
+         * 
+         *         Vector2 mainDirection;
 
+        if (input == Vector2.zero)
+            mainDirection = currentVelocity.normalized;
+        else
+            mainDirection = targetVelocity.normalized;
+         */
 
-        if (targetVelocity.magnitude < velInTargetDir)
+        var velInMainDir = currentVelocity.magnitude * Mathf.Cos(Vector2.Angle(mainDirection, currentVelocity) * Mathf.Deg2Rad);
+
+        if (targetVelocity.magnitude < velInMainDir)
         {
             // Decelerate
 
             // - Do not decelerate below the target velocity
-            var maxVelChange = velInTargetDir - targetVelocity.magnitude;
+            var maxVelChange = velInMainDir - targetVelocity.magnitude;
 
-            var curveX = -velInTargetDir / _maxSpeed;
-            var velocityChange = Mathf.Min(_acceleration.Evaluate(curveX) * _accelerationFactor * _maxSpeed, maxVelChange);
+            var curveX = -velInMainDir / maxSpeed;
+            var velocityChange = Mathf.Min(acceleration.Evaluate(curveX) * maxSpeed, maxVelChange);
 
-            nextVelocity -= targetDirection * velocityChange;
+            nextVelocity -= mainDirection * velocityChange;
 
-        } else if (targetVelocity.magnitude > velInTargetDir)
+        } else if (targetVelocity.magnitude > velInMainDir)
         {
             // Accelerate
 
             // - Do not accelerate above the target velocity
-            var maxVelChange = targetVelocity.magnitude - velInTargetDir;
+            var maxVelChange = targetVelocity.magnitude - velInMainDir;
 
-            var curveX = velInTargetDir / _maxSpeed;
-            var velocityChange = Mathf.Min(_acceleration.Evaluate(curveX) * _accelerationFactor * _maxSpeed, maxVelChange);
+            var curveX = velInMainDir / maxSpeed;
+            var velocityChange = Mathf.Min(acceleration.Evaluate(curveX) * maxSpeed, maxVelChange);
 
-            nextVelocity += targetDirection * velocityChange;
+            nextVelocity += mainDirection * velocityChange;
         }
 
 
 
         // Move the next velocity perpendicular to target velocity
-        var perpDirection = targetVelocity == Vector2.zero ? Vector2.left : Vector2.Perpendicular(targetVelocity);
+        var secondaryDir = targetVelocity == Vector2.zero ? Vector2.left : Vector2.Perpendicular(targetVelocity);
 
         // - The current velocity in the perpendicular direction
-        var velInPerpDir = currentVelocity.magnitude * Mathf.Cos(Vector2.Angle(perpDirection, currentVelocity) * Mathf.Deg2Rad);
+        var velInPerpDir = currentVelocity.magnitude * Mathf.Cos(Vector2.Angle(secondaryDir, currentVelocity) * Mathf.Deg2Rad);
 
         // - Always decelerate in the perpendicular direction
-        var curveXPerp = -Mathf.Abs(velInTargetDir) / _maxSpeed;
+        var curveXPerp = -Mathf.Abs(velInMainDir) / maxSpeed;
 
-        var velocityChangePerp = Mathf.Min(_acceleration.Evaluate(curveXPerp) * _accelerationFactor * _maxSpeed, Mathf.Abs(velInPerpDir));
+        var velocityChangePerp = Mathf.Min(acceleration.Evaluate(curveXPerp) * maxSpeed, Mathf.Abs(velInPerpDir));
 
-        nextVelocity += perpDirection.normalized * (velInPerpDir > 0 ? -velocityChangePerp : velocityChangePerp);
+        nextVelocity += secondaryDir.normalized * (velInPerpDir > 0 ? -velocityChangePerp : velocityChangePerp);
 
 
 
