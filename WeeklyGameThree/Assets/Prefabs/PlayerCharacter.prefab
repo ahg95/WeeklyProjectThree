@@ -129,8 +129,8 @@ MonoBehaviour:
   _rigidbody: {fileID: 3254942874738762373}
   _camera: {fileID: 0}
   _playerIsDodging: {fileID: 11400000, guid: cff3f3cc179bf4840a133665a43be6fd, type: 2}
-  _maxSpeed: 8
-  _accelerationFactor: 1
+  _playerCanDodge: {fileID: 11400000, guid: c014fd43214fcd74fb593249089b7d45, type: 2}
+  _maxSpeed: 5
   _acceleration:
     serializedVersion: 2
     m_Curve:
@@ -155,9 +155,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _dashDuration: 0.1
+  _dashDuration: 0.2
   _dashSpeed: 20
-  _dashCooldown: 2
+  _dashCooldown: 0
   _ListenToInput: 0
 --- !u!114 &8285414828181185956
 MonoBehaviour:
@@ -171,6 +171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fe9c3aac90248b4c990e348328aa18e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _camera: {fileID: 0}
   _projectile: {fileID: 7581585328676439867, guid: b6002b6caefc47f4b9424c164a9a2cda, type: 3}
   _projectileContainer: {fileID: 5171785965727506762}
   _shootables: {fileID: 11400000, guid: f65d5f5e2edeb3943bbddb1d360ae04c, type: 2}
@@ -193,6 +194,8 @@ MonoBehaviour:
   _healthDepleted: {fileID: 11400000, guid: bdd7a943dcf499b49a35c17b61edac07, type: 2}
   _magicShapes: {fileID: 11400000, guid: 1da7873ef69904647932212006af1994, type: 2}
   _damagePerSecond: 100
+  _sampleAreaSize: {x: 0, y: 0}
+  _samplingDistance: 0
 --- !u!114 &6748429418637808678
 MonoBehaviour:
   m_ObjectHideFlags: 0

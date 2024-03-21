@@ -15,6 +15,9 @@ public class PlayerMover : MonoBehaviour
     [SerializeField]
     BoolVariable _playerIsDodging;
 
+    [SerializeField]
+    BoolVariable _playerCanDodge;
+
     [Header("Movement parameters")]
     [SerializeField]
     [Range(1, 1000)]
@@ -110,12 +113,13 @@ public class PlayerMover : MonoBehaviour
 
 
         // Dash
-        if (_playerInput.Player.Dash.WasPressedThisFrame() && _dashStartTime + _dashCooldown < Time.time)
+        if (_playerCanDodge.RuntimeValue && _playerInput.Player.Dash.WasPressedThisFrame() && _dashStartTime + _dashCooldown < Time.time)
         {
             _dashStartTime = Time.time;
             _speedBeforeDash = _rigidbody.velocity.magnitude;
             _rigidbody.velocity = _dashDirection.normalized * _dashSpeed;
             _playerIsDodging.RuntimeValue = true;
+            _playerCanDodge.RuntimeValue = false;
         }
     }
 
