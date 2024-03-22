@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea4fbd2c773d0b84495dc748fc07c818, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _timeScale: {fileID: 11400000, guid: 9afece40933be4e47acdfda9fbff4462, type: 2}
   _baseOffset: 0
   _moves: 0
   _movesBackwards: 0
@@ -53,6 +54,7 @@ MonoBehaviour:
   _movementCycles: 0
   _movementOffset: 0
   _rotates: 0
+  _rotatesCounterclockwise: 0
   _rotationCycles: 0
   _rotationOffset: 0
   _scales: 0
@@ -144,7 +146,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1597174841
-  m_SortingLayer: 2
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: c7924bb1c924f944780b9d00f1baff23, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.21960784}

@@ -8,6 +8,9 @@ public class MagicShape : MonoBehaviour
 {
     // General
     [SerializeField]
+    FloatVariable _timeScale;
+
+    [SerializeField]
     float _baseOffset;
 
     // Movement
@@ -18,7 +21,7 @@ public class MagicShape : MonoBehaviour
     [SerializeField]
     Path _path;
     [SerializeField]
-    int _movementCycles = 1;
+    float _movementCycles = 1;
     [SerializeField]
     float _movementOffset;
 
@@ -26,7 +29,9 @@ public class MagicShape : MonoBehaviour
     [SerializeField]
     bool _rotates;
     [SerializeField]
-    int _rotationCycles = 1;
+    bool _rotatesCounterclockwise;
+    [SerializeField]
+    float _rotationCycles = 1;
     [SerializeField]
     float _rotationOffset;
 
@@ -34,7 +39,7 @@ public class MagicShape : MonoBehaviour
     [SerializeField]
     bool _scales;
     [SerializeField]
-    int _scalingCycles = 1;
+    float _scalingCycles = 1;
     [SerializeField]
     float _defaultScale;
     [SerializeField]
@@ -47,7 +52,7 @@ public class MagicShape : MonoBehaviour
 
     private void Update()
     {
-        _timer += Time.deltaTime;
+        _timer += Time.deltaTime * _timeScale.RuntimeValue;
 
         UpdatePositionIfMoves();
 
@@ -74,6 +79,9 @@ public class MagicShape : MonoBehaviour
         if (_rotates)
         {
             var angle = (_timer / GLOBALCYCLETIME * _rotationCycles + _baseOffset + _rotationOffset) * 360;
+
+            angle = _rotatesCounterclockwise ? angle : -angle;
+
             transform.rotation = Quaternion.Euler(0, 0, angle);
         }
     }
@@ -102,6 +110,7 @@ public class MagicShape : MonoBehaviour
     public class MagicShapeEditor : Editor
     {
         // General
+        SerializedProperty _timeScaleProperty;
         SerializedProperty _baseOffsetProperty;
 
         // Movement
@@ -113,6 +122,7 @@ public class MagicShape : MonoBehaviour
 
         // Rotation
         SerializedProperty _rotatesProperty;
+        SerializedProperty _rotatesCounterclockwiseProperty;
         SerializedProperty _rotationCyclesProperty;
         SerializedProperty _rotationOffsetProperty;
 
@@ -126,6 +136,7 @@ public class MagicShape : MonoBehaviour
         private void OnEnable()
         {
             // General
+            _timeScaleProperty = serializedObject.FindProperty("_timeScale");
             _baseOffsetProperty = serializedObject.FindProperty("_baseOffset");
 
             // Movement
@@ -137,6 +148,7 @@ public class MagicShape : MonoBehaviour
 
             // Rotation
             _rotatesProperty = serializedObject.FindProperty("_rotates");
+            _rotatesCounterclockwiseProperty = serializedObject.FindProperty("_rotatesCounterclockwise");
             _rotationCyclesProperty = serializedObject.FindProperty("_rotationCycles");
             _rotationOffsetProperty = serializedObject.FindProperty("_rotationOffset");
 
@@ -153,7 +165,11 @@ public class MagicShape : MonoBehaviour
             serializedObject.Update();
 
             // General
+            EditorGUILayout.PropertyField(_timeScaleProperty);
+
             EditorGUILayout.Slider(_baseOffsetProperty, 0f, 1f);
+
+
 
             // Moves
             GUILayout.Space(8);
@@ -165,7 +181,7 @@ public class MagicShape : MonoBehaviour
 
                 EditorGUILayout.PropertyField(_movesBackwardsProperty);
                 EditorGUILayout.PropertyField(_pathProperty);
-                EditorGUILayout.IntSlider(_movementCyclesProperty, 1, 10);
+                EditorGUILayout.Slider(_movementCyclesProperty, 0.125f, 10);
                 EditorGUILayout.Slider(_movementOffsetProperty, 0f, 1f);
 
                 EditorGUI.indentLevel = 0;
@@ -181,7 +197,8 @@ public class MagicShape : MonoBehaviour
             {
                 EditorGUI.indentLevel = 1;
 
-                EditorGUILayout.IntSlider(_rotationCyclesProperty, 1, 10);
+                EditorGUILayout.PropertyField(_rotatesCounterclockwiseProperty);
+                EditorGUILayout.Slider(_rotationCyclesProperty, 0.125f, 10);
                 EditorGUILayout.Slider(_rotationOffsetProperty, 0f, 1f);
 
                 EditorGUI.indentLevel = 0;
@@ -197,7 +214,7 @@ public class MagicShape : MonoBehaviour
             {
                 EditorGUI.indentLevel = 1;
 
-                EditorGUILayout.IntSlider(_scalingCyclesProperty, 1, 10);
+                EditorGUILayout.Slider(_scalingCyclesProperty, 0.125f, 10);
                 EditorGUILayout.Slider(_scalingOffsetProperty, 0f, 1f);
                 EditorGUILayout.Slider(_defaultScaleProperty, 0f, 10f);
                 EditorGUILayout.Slider(_changedScaleProperty, 0f, 10f);
