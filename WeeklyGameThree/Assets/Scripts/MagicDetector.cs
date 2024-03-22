@@ -44,6 +44,8 @@ public class MagicDetector : MonoBehaviour
             _isInMagic = false;
             _nrOfMagicDetectorsInMagic--;
         }
+
+        _allDetectorsInMagic.RuntimeValue = _nrOfMagicDetectorsInMagic == _nrOfMagicDetectors;
     }
 
     void Update()

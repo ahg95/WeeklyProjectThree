@@ -17,9 +17,9 @@ public class MandatoryWaypoint : MonoBehaviour
     [SerializeField]
     Sprite _reachedSprite;
 
-    [Header("Game Events")]
+    [Header("Game Variables")]
     [SerializeField]
-    SimpleGameEvent _allWaypointsReached;
+    BoolVariable _allWaypointsReached;
 
     SpriteRenderer _renderer;
 
@@ -34,6 +34,8 @@ public class MandatoryWaypoint : MonoBehaviour
     private void OnEnable()
     {
         _totalNrOfWaypoints++;
+
+        _allWaypointsReached.RuntimeValue = _nrOfReachedWaypoints == _totalNrOfWaypoints;
     }
 
     private void OnDisable()
@@ -42,6 +44,8 @@ public class MandatoryWaypoint : MonoBehaviour
 
         if (_isReached)
             _nrOfReachedWaypoints--;
+
+        _allWaypointsReached.RuntimeValue = _nrOfReachedWaypoints == _totalNrOfWaypoints;
     }
 
     public void SetAsUnreached()
@@ -63,7 +67,6 @@ public class MandatoryWaypoint : MonoBehaviour
         _isReached = true;
         _renderer.sprite = _reachedSprite;
 
-        if (_nrOfReachedWaypoints == _totalNrOfWaypoints)
-            _allWaypointsReached.Raise();
+        _allWaypointsReached.RuntimeValue = _nrOfReachedWaypoints == _totalNrOfWaypoints;
     }
 }
