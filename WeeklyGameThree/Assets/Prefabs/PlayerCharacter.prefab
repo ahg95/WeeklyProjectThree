@@ -190,6 +190,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fced6828c25132c4187c03ecc6b404f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerIsInsideSafeZone: {fileID: 11400000, guid: db055402c9f28504c8c5c1a10015c78c, type: 2}
   _currentHealth: {fileID: 11400000, guid: 2b1b40eda6cfe1644bfc0a83ee0b8284, type: 2}
   _healthDepleted: {fileID: 11400000, guid: bdd7a943dcf499b49a35c17b61edac07, type: 2}
   _magicShapes: {fileID: 11400000, guid: 1da7873ef69904647932212006af1994, type: 2}
