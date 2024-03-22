@@ -15,7 +15,7 @@ public class Shootable : MonoBehaviour
         _targetMarker.SetActive(false);
     }
 
-    public virtual void OnHit()
+    public void OnHit()
     {
         _WasShot?.Invoke();
     }

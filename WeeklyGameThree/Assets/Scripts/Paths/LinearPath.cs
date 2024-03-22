@@ -11,11 +11,28 @@ public class LinearPath : Path
     [SerializeField]
     bool _isCyclic;
 
+    public bool IsCyclic
+    {
+        get { return _isCyclic; }
+    }
+
     [SerializeField]
     int _numberOfPoints;
 
+    public int NumberOfPoints
+    {
+        get { return _numberOfPoints; }
+    }
+
     [SerializeField, HideInInspector]
     List<Vector3> _points;
+
+    public Vector3 GetPoint(int index)
+    {
+        index = index % _points.Count;
+        index += index < 0 ? _points.Count : 0;
+        return _points[index];
+    }
 
     [SerializeField, HideInInspector]
     List<float> _distances;
