@@ -27,39 +27,21 @@ public class Room : MonoBehaviour
     [SerializeField]
     ShootableRuntimeSet _activeShootables;
 
-    BoxCollider2D _collider;
+    BoxCollider2D _roomCollider;
 
-    List<Collider2D> _magicShapes;
+    List<Shootable> _shootables = new();
+    List<Collider2D> _magicShapes = new();
 
-    List<Shootable> _shootables;
+    List<RoomObject> _roomObjects = new();
 
-    private void Awake()
+    private void OnValidate()
     {
-        // Adjust collider
-        _collider = GetComponent<BoxCollider2D>();
+        _roomCollider = GetComponent<BoxCollider2D>();
 
-        AdjustColliderSizeToTilemaps();
-
-
-
-        // Find magic shapes
-        // - Also find inactive magic shapes
-        var colliders = GetComponentsInChildren<Collider2D>(true);
-
-        var magicLayerIndex = LayerMask.NameToLayer("Magic");
-
-        _magicShapes = new();
-
-        foreach (var collider in colliders)
-            if (collider.gameObject.layer == magicLayerIndex)
-                _magicShapes.Add(collider);
-
-
-        // Find shootables in the room
-        _shootables = GetComponentsInChildren<Shootable>(true).ToList();
+        AdjustColliderSizeToTilemaps(_roomCollider);
     }
 
-    void AdjustColliderSizeToTilemaps()
+    void AdjustColliderSizeToTilemaps(BoxCollider2D boxCollider)
     {
         // Calculate the bounds of all tilemaps combined
         Bounds bounds = new();
@@ -83,55 +65,116 @@ public class Room : MonoBehaviour
 
 
         // Update the collider
-        _collider.offset = bounds.center;
-        _collider.size = bounds.size;
+        boxCollider.offset = bounds.center;
+        boxCollider.size = bounds.size;
     }
 
+    private void Awake()
+    {
+        // Find magic shapes
+        // - Also find inactive magic shapes
+        var colliders = GetComponentsInChildren<Collider2D>(true);
+
+        var magicLayerIndex = LayerMask.NameToLayer("Magic");
+
+        foreach (var collider in colliders)
+            if (collider.gameObject.layer == magicLayerIndex)
+                _magicShapes.Add(collider);
+
+        // Find shootables in the room
+        _shootables = GetComponentsInChildren<Shootable>(true).ToList();
+
+        // Find room objects in the room
+        _roomObjects = GetComponentsInChildren<MonoBehaviour>(true).OfType<RoomObject>().ToList();
+
+        // Disable this room
+        enabled = false;
+    }
+
+    private void OnEnable()
+    {
+        // Disable the previous room, if there was one
+        if (_activeRoom != null)
+            _activeRoom.enabled = false;
+
+
+
+        // Setup this room as the active one
+        // - Save this room as the active one
+        _activeRoom = this;
+
+        // - Update the spawn position
+        _spawnPosition.RuntimeValue = _spawnPoint.transform.position;
+
+        // - Update the camera bounds
+        var minBounds = new Vector2(_roomCollider.bounds.min.x, _roomCollider.bounds.min.y);
+        var maxBounds = new Vector2(_roomCollider.bounds.max.x, _roomCollider.bounds.max.y);
+
+        _cameraBoundsMin.RuntimeValue = minBounds;
+        _cameraBoundsMax.RuntimeValue = maxBounds;
+
+        // - Add all magic shapes in the room to the set of active magic shapes
+        foreach (var shape in _magicShapes)
+            _activeMagicShapes.Add(shape);
+
+        // - Add all shootables in the room to the set of active shootables
+        foreach (var shootable in _shootables)
+            _activeShootables.Add(shootable);
+
+        // - Enable all room objects
+        foreach (var roomObject in _roomObjects)
+            roomObject.Enable();
+
+
+
+        // Reset this room
+        ResetRoomIfActive();
+    }
+
+    private void OnDisable()
+    {
+        // Disable all room objects
+        foreach (var roomObject in _roomObjects)
+            roomObject.Disable();
+
+
+
+        // Remove all magic shapes in the room from the set of active magic shapes
+        foreach (var magicShape in _magicShapes)
+            _activeMagicShapes.Remove(magicShape);
+
+
+
+        // Remove all shootables in the room from the set of active shootables
+        foreach (var shootable in _shootables)
+            _activeShootables.Remove(shootable);
+    }
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        UpdateVariablesIfPlayerInRoom(collision);
-    }
+        if (_activeRoom == this || !_roomCollider.OverlapPoint(collision.transform.position) || collision.gameObject.tag != "Player")
+            return;
 
+        enabled = true;
+    }
 
     // OnTriggerStay2D is not called the first frame of the game if the player is in the room.
     // If only OnTriggerStay2D was used then the variables would not be updated before the first update loop.
     // If the variables are not updated before the first update loop then the camera does not snap instantly.
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        UpdateVariablesIfPlayerInRoom(collision);
+        if (_activeRoom == this || !_roomCollider.OverlapPoint(collision.transform.position) || collision.gameObject.tag != "Player")
+            return;
+
+        enabled = true;
     }
 
-    void UpdateVariablesIfPlayerInRoom(Collider2D collision)
+    public void ResetRoomIfActive()
     {
-        if (_activeRoom != this && _collider.OverlapPoint(collision.transform.position) && collision.gameObject.tag == "Player")
-        {
-            // Update spawn position
-            _spawnPosition.RuntimeValue = _spawnPoint.transform.position;
+        if (_activeRoom != this)
+            return;
 
-            // Update camera bounds
-            var minBounds = new Vector2(_collider.bounds.min.x, _collider.bounds.min.y);
-            var maxBounds = new Vector2(_collider.bounds.max.x, _collider.bounds.max.y);
-
-            _cameraBoundsMin.RuntimeValue = minBounds;
-            _cameraBoundsMax.RuntimeValue = maxBounds;
-
-            // Update magic shapes
-            _activeMagicShapes.Clear();
-
-            foreach (var shape in _magicShapes)
-                _activeMagicShapes.Add(shape);
-
-            // Update shootables
-            _activeShootables.Clear();
-
-            foreach (var shootable in _shootables)
-            {
-                _activeShootables.Add(shootable);
-            }
-
-            // Save this room to be the active one
-            _activeRoom = this;
-        }
+        foreach (var roomObject in _roomObjects)
+            roomObject.ResetRoomObject();
     }
 }

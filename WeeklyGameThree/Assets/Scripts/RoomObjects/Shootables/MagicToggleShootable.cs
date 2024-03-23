@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MagicToggleShootable : MonoBehaviour
+public class MagicToggleShootable : MonoBehaviour, RoomObject
 {
     [SerializeField]
     Transform _magic;
@@ -51,5 +51,11 @@ public class MagicToggleShootable : MonoBehaviour
         var factor = _scaleIsIncreasing ? _scaleCurve.Evaluate(_alpha) : 1 - _scaleCurve.Evaluate(1 - _alpha);
 
         _magic.localScale = Vector3.one * factor * MAXSCALE;
+    }
+
+    public void ResetRoomObject()
+    {
+        _alpha = 0;
+        _scaleIsIncreasing = false;
     }
 }

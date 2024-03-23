@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-public class MagicShape : MonoBehaviour
+public class ChangeTransformInCycles : MonoBehaviour, RoomObject
 {
     // General
     [SerializeField]
@@ -104,9 +104,14 @@ public class MagicShape : MonoBehaviour
         UpdateScaleIfScales();
     }
 
+    public void ResetRoomObject()
+    {
+        _timer = 0;
+    }
+
 
 #if UNITY_EDITOR
-    [CustomEditor(typeof(MagicShape)), CanEditMultipleObjects]
+    [CustomEditor(typeof(ChangeTransformInCycles)), CanEditMultipleObjects]
     public class MagicShapeEditor : Editor
     {
         // General

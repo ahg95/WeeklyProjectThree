@@ -2,7 +2,7 @@ using UnityEngine;
 
 [RequireComponent (typeof(SpriteRenderer))]
 [RequireComponent(typeof(Collider2D))]
-public class MandatoryWaypoint : MonoBehaviour
+public class MandatoryWaypoint : MonoBehaviour, RoomObject
 {
     static int _totalNrOfWaypoints;
 
@@ -48,15 +48,6 @@ public class MandatoryWaypoint : MonoBehaviour
         _allWaypointsReached.RuntimeValue = _nrOfReachedWaypoints == _totalNrOfWaypoints;
     }
 
-    public void SetAsUnreached()
-    {
-        if (_isReached)
-            _nrOfReachedWaypoints--;
-
-        _isReached = false;
-        _renderer.sprite = _unreachedSprite;
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (_isReached || collision.gameObject.layer != _playerLayer)
@@ -68,5 +59,14 @@ public class MandatoryWaypoint : MonoBehaviour
         _renderer.sprite = _reachedSprite;
 
         _allWaypointsReached.RuntimeValue = _nrOfReachedWaypoints == _totalNrOfWaypoints;
+    }
+
+    public void ResetRoomObject()
+    {
+        if (_isReached)
+            _nrOfReachedWaypoints--;
+
+        _isReached = false;
+        _renderer.sprite = _unreachedSprite;
     }
 }

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Collider2D))]
-public class DashCollectable : MonoBehaviour
+public class DashCollectable : MonoBehaviour, RoomObject
 {
     [SerializeField]
     BoolVariable _playerCanDash;
@@ -11,7 +11,7 @@ public class DashCollectable : MonoBehaviour
 
     static int _playerLayer = -1;
 
-    private void OnEnable()
+    private void Awake()
     {
         if (_playerLayer == -1)
             _playerLayer = LayerMask.NameToLayer("Player");
@@ -19,13 +19,17 @@ public class DashCollectable : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("OnTriggerEnter");
-
         if (collision.gameObject.layer == _playerLayer && !_playerCanDash.RuntimeValue)
         {
             _playerCanDash.RuntimeValue = true;
 
             gameObject.SetActive(!_RemoveWhenCollected);
         }
+    }
+
+    public void ResetRoomObject()
+    {
+        gameObject.SetActive(true);
+        _playerCanDash.RuntimeValue = false;
     }
 }

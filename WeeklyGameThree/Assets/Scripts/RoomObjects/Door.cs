@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Door : MonoBehaviour
+public class Door : MonoBehaviour, RoomObject
 {
     [Header("References")]
     [SerializeField]
@@ -14,6 +14,11 @@ public class Door : MonoBehaviour
     BoolVariable _allMandatoryWaypointsReached;
 
     void LateUpdate()
+    {
+        _obstacle.SetActive(!_allDetectorsInMagic.RuntimeValue || !_allMandatoryWaypointsReached.RuntimeValue);
+    }
+
+    public void ResetRoomObject()
     {
         _obstacle.SetActive(!_allDetectorsInMagic.RuntimeValue || !_allMandatoryWaypointsReached.RuntimeValue);
     }

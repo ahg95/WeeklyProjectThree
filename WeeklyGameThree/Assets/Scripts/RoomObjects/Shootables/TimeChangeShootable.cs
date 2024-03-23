@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class TimerChangeShootable : MonoBehaviour
+public class TimerChangeShootable : MonoBehaviour, RoomObject
 {
     [SerializeField]
     FloatVariable _timeScale;
@@ -14,7 +14,6 @@ public class TimerChangeShootable : MonoBehaviour
 
     const float TOTALDURATION = 2;
     const float TIMESCALE = 0.1f;
-
 
     private void Awake()
     {
@@ -49,5 +48,12 @@ public class TimerChangeShootable : MonoBehaviour
             return;
 
         _timeScale.RuntimeValue = 1;
+    }
+
+    public void ResetRoomObject()
+    {
+        _timeScale.RuntimeValue = 1;
+        _durationLeft.RuntimeValue = 0;
+        _shotLast = null;
     }
 }

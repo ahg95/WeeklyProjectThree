@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MovingShootable : MonoBehaviour
+public class MovingShootable : MonoBehaviour, RoomObject
 {
     [SerializeField]
     LinearPath _path;
@@ -90,5 +90,14 @@ public class MovingShootable : MonoBehaviour
             return;
 
         _isMoving = false;
+    }
+
+    public void ResetRoomObject()
+    {
+        transform.position = _path.GetPoint(0);
+        _targetPointIndex = 0;
+        _targetPosition = _path.GetPoint(_targetPointIndex);
+        _isMoving = false;
+        _pointIndexIsDecreasing = false;
     }
 }

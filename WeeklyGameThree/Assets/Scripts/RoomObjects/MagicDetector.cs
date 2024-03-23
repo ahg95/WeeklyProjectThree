@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MagicDetector : MonoBehaviour
+public class MagicDetector : MonoBehaviour, RoomObject
 {
     [SerializeField]
     SpriteRenderer _renderer;
@@ -86,5 +86,10 @@ public class MagicDetector : MonoBehaviour
 
 
         _allDetectorsInMagic.RuntimeValue = _nrOfMagicDetectorsInMagic == _nrOfMagicDetectors;
+    }
+
+    public void ResetRoomObject()
+    {
+
     }
 }
