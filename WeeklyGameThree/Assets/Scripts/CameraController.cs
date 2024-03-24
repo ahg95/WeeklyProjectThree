@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -44,31 +42,33 @@ public class CameraController : MonoBehaviour
 
     void LateUpdate()
     {
-        // Track the target
-        // - Calculate the target position
-        Vector3 targetPosition = _target.transform.position + Vector3.forward * _cameraZ + (Vector3)_targetOffset;
+        // Calculate the target position
+        Vector3 targetPosition = _target.transform.position + Vector3.back * 10;
+
+        // - Calculate the bounds of the viewport
+        var viewportExtents = new Vector2(_camera.orthographicSize * _camera.aspect, _camera.orthographicSize);
+
+        // - Calculate horizontal target position
+        if (_maxBounds.RuntimeValue.x - _minBounds.RuntimeValue.x < 2 * viewportExtents.x)
+        {
+            targetPosition.x = (_minBounds.RuntimeValue.x + _maxBounds.RuntimeValue.x) / 2;
+        } else
+        {
+            targetPosition.x = Mathf.Clamp(targetPosition.x, _minBounds.RuntimeValue.x + viewportExtents.x, _maxBounds.RuntimeValue.x - viewportExtents.x);
+        }
+
+        // - Calculate vertical target position
+        if (_maxBounds.RuntimeValue.y - _minBounds.RuntimeValue.y < 2 * viewportExtents.y)
+        {
+            targetPosition.y = (_minBounds.RuntimeValue.y + _maxBounds.RuntimeValue.y) / 2;
+        } else
+        {
+            targetPosition.y = Mathf.Clamp(targetPosition.y, _minBounds.RuntimeValue.y + viewportExtents.y, _maxBounds.RuntimeValue.y - viewportExtents.y);
+        }
 
 
 
-        // - Adjust the target position such that the camera viewport will stay within the room bounds,
-        // or such that it centers the room staying within the bounds of the room is impossible
-        var halfViewport = new Vector2(_camera.orthographicSize * _camera.aspect, _camera.orthographicSize);
-
-        // - - Adjust vertical position
-        var topOverlap = Mathf.Max(0, targetPosition.y + halfViewport.y - _maxBounds.RuntimeValue.y);
-        var bottomOverlap = Mathf.Max(0, _minBounds.RuntimeValue.y - (targetPosition.y - halfViewport.y));
-        var verticalMove = bottomOverlap - topOverlap;
-
-        // - - Adjust horizontal position
-        var rightOverlap = Mathf.Max(0, targetPosition.x + halfViewport.x - _maxBounds.RuntimeValue.x);
-        var leftOverlap = Mathf.Max(0, _minBounds.RuntimeValue.x - (targetPosition.x - halfViewport.x));
-        var horizontalMove = leftOverlap - rightOverlap;
-
-        targetPosition += Vector3.up * verticalMove + Vector3.right * horizontalMove;
-
-
-
-        // - Move to the target position, either instantly or smoothly
+        // Move to the target position, either instantly or smoothly
         if (_snapToTarget)
         {
             transform.position = targetPosition;
