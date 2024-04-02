@@ -6031,6 +6031,10 @@ MonoBehaviour:
   _cameraBoundsMax: {fileID: 11400000, guid: 11689a89908d047428698282f7ad198b, type: 2}
   _activeMagicShapes: {fileID: 11400000, guid: 1da7873ef69904647932212006af1994, type: 2}
   _activeShootables: {fileID: 11400000, guid: f65d5f5e2edeb3943bbddb1d360ae04c, type: 2}
+  _roomEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  _roomCollider: {fileID: 1966858195881736305}
 --- !u!61 &1966858195881736305
 BoxCollider2D:
   m_ObjectHideFlags: 0

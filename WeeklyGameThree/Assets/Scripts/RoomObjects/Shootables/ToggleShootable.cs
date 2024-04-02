@@ -1,7 +1,16 @@
 using UnityEngine;
 
-public class MagicToggleShootable : MonoBehaviour, RoomObject
+public class ToggleShootable : MonoBehaviour, RoomObject
 {
+    [SerializeField]
+    SpriteRenderer _renderer;
+
+    [SerializeField]
+    Sprite _enabledSprite;
+
+    [SerializeField]
+    Sprite _disabledSprite;
+
     [SerializeField]
     Transform _magic;
 
@@ -32,12 +41,13 @@ public class MagicToggleShootable : MonoBehaviour, RoomObject
     void OnShot()
     {
         _scaleIsIncreasing = !_scaleIsIncreasing;
+        _renderer.sprite = _scaleIsIncreasing ? _enabledSprite : _disabledSprite;
     }
 
     private void Update()
     {
         const float CHANGEDURATION = 0.3333f;
-        const float MAXSCALE = 5f;
+        const float MAXSCALE = 6f;
 
         if (_scaleIsIncreasing && _alpha < 1)
         {
@@ -57,5 +67,6 @@ public class MagicToggleShootable : MonoBehaviour, RoomObject
     {
         _alpha = 0;
         _scaleIsIncreasing = false;
+        _renderer.sprite = _disabledSprite;
     }
 }

@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a2e14c77289bf4044ae000ee8bfccef9, type: 3}
-  m_Name: PlayerIsDodging
+  m_Name: PlayerIsDashing
   m_EditorClassIdentifier: 
   DefaultValue: 0
