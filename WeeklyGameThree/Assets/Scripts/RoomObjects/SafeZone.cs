@@ -10,7 +10,7 @@ public class SafeZone : MonoBehaviour
 
     static int _playerLayer;
 
-    private void OnValidate()
+    private void Awake()
     {
         _playerLayer = LayerMask.NameToLayer("Player");
 

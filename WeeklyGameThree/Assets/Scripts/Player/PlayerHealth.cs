@@ -18,6 +18,9 @@ public class PlayerHealth : MonoBehaviour
     SimpleGameEvent _healthDepleted;
 
     [SerializeField]
+    BoolVariable _playerIsDodging;
+
+    [SerializeField]
     RuntimeSet<Collider2D> _magicShapes;
 
     [Header("Parameters")]
@@ -37,10 +40,8 @@ public class PlayerHealth : MonoBehaviour
     private void Awake()
     {
         _maxHealth = _currentHealth.RuntimeValue;
-    }
 
-    private void OnValidate()
-    {
+
         // Calculate sample positions
         _samplePositions.Clear();
 
@@ -62,7 +63,7 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    void Update()
+    void LateUpdate()
     {
         AdjustHealth();
     }
@@ -70,7 +71,7 @@ public class PlayerHealth : MonoBehaviour
     void AdjustHealth()
     {
         // No need to reduce the health if it is already 0 or if the player is inside a safe zone
-        if (_currentHealth.RuntimeValue == 0 || _playerIsInsideSafeZone.RuntimeValue)
+        if (_currentHealth.RuntimeValue == 0 || _playerIsInsideSafeZone.RuntimeValue || _playerIsDodging.RuntimeValue)
             return;
 
 
@@ -95,21 +96,13 @@ public class PlayerHealth : MonoBehaviour
         }
 
 
+        var inMagicRatio = (float)nrOfSamplingPointsInMagic / _samplePositions.Count;
 
-        // Determine damage based on the number of points inside magic
-        if (nrOfSamplingPointsInMagic == 0)
+        if (inMagicRatio > 0.95f)
         {
-            _currentHealth.RuntimeValue = Mathf.Min(_maxHealth, _currentHealth.RuntimeValue + 250 * Time.deltaTime);
-        } else if (nrOfSamplingPointsInMagic == _samplePositions.Count)
-        {
-            _currentHealth.RuntimeValue = Mathf.Max(0, _currentHealth.RuntimeValue - 750 * Time.deltaTime);
-        } else
-        {
-            _currentHealth.RuntimeValue = Mathf.Max(0, _currentHealth.RuntimeValue - 250 * ((float)nrOfSamplingPointsInMagic / _samplePositions.Count) * Time.deltaTime);
-        }
-
-        if (_currentHealth.RuntimeValue == 0)
+            _currentHealth.RuntimeValue = 0;
             _healthDepleted.Raise();
+        }
     }
 
     public void ResetHealth()

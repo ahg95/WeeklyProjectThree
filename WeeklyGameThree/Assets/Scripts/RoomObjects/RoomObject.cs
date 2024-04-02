@@ -8,7 +8,7 @@ public interface RoomObject
 
     public void Disable()
     {
-        ((MonoBehaviour)this).enabled = true;
+        ((MonoBehaviour)this).enabled = false;
     }
 
     public void ResetRoomObject();

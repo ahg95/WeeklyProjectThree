@@ -935,7 +935,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3655536288759188820, guid: 53618a9920f03074696329b914a47b45, type: 3}
       propertyPath: m_Name
-      value: Shootable
+      value: MovingShootable
       objectReference: {fileID: 0}
     - target: {fileID: 3910277188005818372, guid: 53618a9920f03074696329b914a47b45, type: 3}
       propertyPath: m_Sprite

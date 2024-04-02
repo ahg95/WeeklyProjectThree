@@ -43,6 +43,8 @@ public class PlayerShooter : MonoBehaviour
         }
     }
 
+    Vector2 _aimDirection;
+
     Shootable _target;
 
     public Action<Shootable> _TargetChanged;
@@ -57,10 +59,7 @@ public class PlayerShooter : MonoBehaviour
     private void Awake()
     {
         _playerInput = new PlayerInput();
-    }
 
-    private void OnValidate()
-    {
         _squaredRange = Mathf.Pow(_range, 2);
     }
 
@@ -87,6 +86,7 @@ public class PlayerShooter : MonoBehaviour
         }
 
 
+        // Calculate target direction
         Vector2 aimDirection;
 
         if (Mouse.current.rightButton.isPressed || Mouse.current.rightButton.wasReleasedThisFrame)
@@ -99,13 +99,15 @@ public class PlayerShooter : MonoBehaviour
             var clickedPosition = ray.GetPoint(enter);
 
             // - Map the clicked position to an input vector
-            const float minimumDistance = 3;
+            const float minimumDistance = 0.25f;
             var delta = clickedPosition - transform.position;
             aimDirection = delta.magnitude >= minimumDistance ? delta.normalized : Vector2.zero;
         } else
         {
             aimDirection = _playerInput.Player.Move.ReadValue<Vector2>().normalized;
         }
+
+
 
         // Update the currently targeted shootable
 
@@ -144,6 +146,7 @@ public class PlayerShooter : MonoBehaviour
         }
 
         Target = updatedTarget;
+
 
 
         // Shoot if the player releases the button

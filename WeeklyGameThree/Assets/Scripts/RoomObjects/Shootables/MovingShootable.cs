@@ -32,7 +32,8 @@ public class MovingShootable : MonoBehaviour, RoomObject
 
     private void OnValidate()
     {
-        transform.position = _path.GetPoint(0);
+        if (_path != null)
+            transform.position = _path.GetPoint(0);
     }
 
     void OnShot()

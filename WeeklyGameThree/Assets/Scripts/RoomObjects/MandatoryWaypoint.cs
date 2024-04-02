@@ -25,27 +25,20 @@ public class MandatoryWaypoint : MonoBehaviour, RoomObject
 
     bool _isReached;
 
-    private void Awake()
-    {
-        _playerLayer = LayerMask.NameToLayer("Player");
-        _renderer = GetComponent<SpriteRenderer>();
-    }
+    bool _isSetup;
 
     private void OnEnable()
     {
         _totalNrOfWaypoints++;
 
-        _allWaypointsReached.RuntimeValue = _nrOfReachedWaypoints == _totalNrOfWaypoints;
+        ResetRoomObject();
     }
 
     private void OnDisable()
     {
         _totalNrOfWaypoints--;
 
-        if (_isReached)
-            _nrOfReachedWaypoints--;
-
-        _allWaypointsReached.RuntimeValue = _nrOfReachedWaypoints == _totalNrOfWaypoints;
+        ResetRoomObject();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -63,10 +56,25 @@ public class MandatoryWaypoint : MonoBehaviour, RoomObject
 
     public void ResetRoomObject()
     {
+        SetupIfNecessary();
+
         if (_isReached)
             _nrOfReachedWaypoints--;
 
+        _allWaypointsReached.RuntimeValue = _nrOfReachedWaypoints == _totalNrOfWaypoints;
+
         _isReached = false;
         _renderer.sprite = _unreachedSprite;
+    }
+
+    void SetupIfNecessary()
+    {
+        if (_isSetup)
+            return;
+
+        _playerLayer = LayerMask.NameToLayer("Player");
+        _renderer = GetComponent<SpriteRenderer>();
+
+        _isSetup = true;
     }
 }

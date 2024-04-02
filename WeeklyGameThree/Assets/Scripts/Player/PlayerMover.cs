@@ -13,36 +13,42 @@ public class PlayerMover : MonoBehaviour
 
     [Header("Variables")]
     [SerializeField]
-    BoolVariable _playerIsDodging;
+    BoolVariable _playerIsDashing;
 
     [SerializeField]
-    BoolVariable _playerCanDodge;
+    BoolVariable _playerCanDash;
 
-    [Header("Movement parameters")]
+    [Header("Walking parameters")]
     [SerializeField]
-    [Range(1, 1000)]
-    float _maxSpeed;
-
-    [SerializeField]
-    AnimationCurve _acceleration;
-
-    [Header("Dashing")]
-    [SerializeField]
-    float _dashDuration;
+    float _walkMaxSpeed;
 
     [SerializeField]
-    float _dashSpeed;
+    AnimationCurve _walkAcceleration;
+
+    [Header("Dashing parameters")]
+    [SerializeField]
+    float _dashMaxSpeed;
 
     [SerializeField]
-    float _dashCooldown;
+    AnimationCurve _dashAcceleration;
 
-    float _dashStartTime;
+    [Header("Dashing to movement transition parameters")]
+    [SerializeField]
+    float _minDashDuration;
 
-    Vector2 _dashDirection;
+    [SerializeField]
+    float _maxDashDuration;
 
-    float _speedBeforeDash;
+    [SerializeField]
+    float _transitionDuration;
 
     PlayerInput _playerInput;
+
+    float _dashPressTime;
+
+    float _dashReleaseTime;
+
+    Vector2 _dashDirection;
 
     Vector2 _movementInput;
 
@@ -58,7 +64,11 @@ public class PlayerMover : MonoBehaviour
         ResetDashCooldown();
     }
 
-    public void ResetDashCooldown() => _dashStartTime = -Mathf.Infinity;
+    public void ResetDashCooldown()
+    {
+        _dashPressTime = -1000;
+        _dashReleaseTime = -1000;
+    }
 
     private void OnEnable()
     {
@@ -99,11 +109,11 @@ public class PlayerMover : MonoBehaviour
             var delta = clickedPosition - transform.position;
             _movementInput = delta.normalized * Mathf.InverseLerp(minDistance, maxDistance, delta.magnitude);
 
-        }
-        else
+        } else
         {
             _movementInput = _playerInput.Player.Move.ReadValue<Vector2>();
         }
+
 
 
         // Update the direction to dash into
@@ -112,32 +122,37 @@ public class PlayerMover : MonoBehaviour
 
 
 
-        // Dash
-        if (_playerCanDodge.RuntimeValue && _playerInput.Player.Dash.WasPressedThisFrame() && _dashStartTime + _dashCooldown < Time.time)
+        // Check if the player started dashing
+        if (_playerCanDash.RuntimeValue && _playerInput.Player.Dash.WasPressedThisFrame())
         {
-            _dashStartTime = Time.time;
-            _speedBeforeDash = _rigidbody.velocity.magnitude;
-            _rigidbody.velocity = _dashDirection.normalized * _dashSpeed;
-            _playerIsDodging.RuntimeValue = true;
-            _playerCanDodge.RuntimeValue = false;
+            _dashPressTime = Time.time;
+            _dashReleaseTime = _dashPressTime + _maxDashDuration;
+
+            _rigidbody.velocity = _dashDirection.normalized * _dashMaxSpeed;
+
+            _playerCanDash.RuntimeValue = false;
+        // Check if the player stopped dashing
+        } else if (_playerIsDashing.RuntimeValue && _playerInput.Player.Dash.WasReleasedThisFrame())
+        {
+            var earliestReleaseTime = _dashPressTime + _minDashDuration;
+            var latestReleaseTime = _dashPressTime + _maxDashDuration;
+            _dashReleaseTime = Mathf.Clamp(Mathf.Min(_dashReleaseTime, Time.time), earliestReleaseTime, latestReleaseTime);
         }
+
+        _playerIsDashing.RuntimeValue = _dashPressTime <= Time.time && Time.time <= _dashReleaseTime + _transitionDuration;
     }
 
     private void FixedUpdate()
     {
-        // Do not convert the movement input to a velocity if the player is dashing
-        if (_dashStartTime + _dashDuration > Time.fixedTime)
-            return;
-        // Revert the velocity if the dash just ended
-        else if (_dashStartTime + _dashDuration + Time.fixedDeltaTime > Time.fixedTime)
-        {
-            _rigidbody.velocity = _rigidbody.velocity.normalized * _speedBeforeDash;
-            _playerIsDodging.RuntimeValue = false;
-        }
-
-
         // Convert the movement input to a velocity
-        _rigidbody.velocity = CalculateNextVelocity(_movementInput, _rigidbody.velocity, _maxSpeed, _acceleration);
+        // - Calculate the next velocity if the player was dashing and if the player was moving
+        var movementVelocity = CalculateNextVelocity(_movementInput, _rigidbody.velocity, _walkMaxSpeed, _walkAcceleration);
+        var dashVelocity = CalculateNextVelocity(_movementInput, _rigidbody.velocity, _dashMaxSpeed, _dashAcceleration);
+
+        var transitionProgress = Mathf.InverseLerp(_dashReleaseTime, _dashReleaseTime + _transitionDuration, Time.time);
+        Debug.Log(transitionProgress);
+
+        _rigidbody.velocity = Vector2.Lerp(dashVelocity, movementVelocity, transitionProgress);
     }
 
     public static Vector2 CalculateNextVelocity(Vector2 input, Vector2 currentVelocity, float maxSpeed, AnimationCurve acceleration)

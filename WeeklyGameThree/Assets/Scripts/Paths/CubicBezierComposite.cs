@@ -32,7 +32,7 @@ public class CubicBezierComposite : Path
 
 
         // Round the position of this object
-        transform.position = transform.position.Round();
+        //transform.position = transform.position.Round();
 
 
 
@@ -122,7 +122,6 @@ public class CubicBezierComposite : Path
 
                 curve._Points[3] = nextCurve._Points[0];
                 curve._Points[2] = 2 * curve._Points[3] - nextCurve._Points[1];
-
             }
         }
     }

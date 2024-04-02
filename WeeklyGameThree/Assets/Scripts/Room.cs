@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Tilemaps;
 
 [RequireComponent(typeof(BoxCollider2D))]
@@ -27,6 +28,10 @@ public class Room : MonoBehaviour
     [SerializeField]
     ShootableRuntimeSet _activeShootables;
 
+    [SerializeField]
+    UnityEvent _roomEntered;
+
+    [SerializeField, HideInInspector]
     BoxCollider2D _roomCollider;
 
     List<Shootable> _shootables = new();
@@ -129,6 +134,11 @@ public class Room : MonoBehaviour
 
         // Reset this room
         ResetRoomIfActive();
+
+
+
+        // Raise event
+        _roomEntered?.Invoke();
     }
 
     private void OnDisable()
