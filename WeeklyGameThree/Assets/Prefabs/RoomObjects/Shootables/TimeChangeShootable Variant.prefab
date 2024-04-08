@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2407184190477910032, guid: 53618a9920f03074696329b914a47b45, type: 3}
+      propertyPath: _activeShootables
+      value: 
+      objectReference: {fileID: 11400000, guid: f65d5f5e2edeb3943bbddb1d360ae04c, type: 2}
     - target: {fileID: 3655536288759188820, guid: 53618a9920f03074696329b914a47b45, type: 3}
       propertyPath: m_Name
       value: TimeChangeShootable Variant

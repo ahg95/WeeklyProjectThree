@@ -150,7 +150,6 @@ public class PlayerMover : MonoBehaviour
         var dashVelocity = CalculateNextVelocity(_movementInput, _rigidbody.velocity, _dashMaxSpeed, _dashAcceleration);
 
         var transitionProgress = Mathf.InverseLerp(_dashReleaseTime, _dashReleaseTime + _transitionDuration, Time.time);
-        Debug.Log(transitionProgress);
 
         _rigidbody.velocity = Vector2.Lerp(dashVelocity, movementVelocity, transitionProgress);
     }

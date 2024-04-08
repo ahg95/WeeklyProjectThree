@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
+using UnityEngine.Windows;
 
 public class PlayerShooter : MonoBehaviour
 {
@@ -9,14 +11,20 @@ public class PlayerShooter : MonoBehaviour
     Camera _camera;
 
     [SerializeField]
-    Projectile _projectile;
+    Rigidbody2D _rigidbody;
+
+    [SerializeField]
+    Projectile _projectilePrefab;
 
     [SerializeField]
     Transform _projectileContainer;
 
+    [SerializeField]
+    LineRenderer _aimIndicator;
+
     [Header("Variables")]
     [SerializeField]
-    ShootableRuntimeSet _shootables;
+    ShootableRuntimeSet _activeShootables;
 
     [Header("Parameters")]
     [SerializeField]
@@ -29,25 +37,12 @@ public class PlayerShooter : MonoBehaviour
     [Range(0, 45)]
     float _maximumAngleError;
 
-    Shootable Target
-    {
-        get => _target;
+    [SerializeField]
+    AnimationCurve _aimingAngularChange;
 
-        set
-        {
-            if (value != _target)
-            {
-                _target = value;
-                _TargetChanged.Invoke(value);
-            }
-        }
-    }
-
-    Vector2 _aimDirection;
+    Vector2 _shootingDirection = Vector2.right;
 
     Shootable _target;
-
-    public Action<Shootable> _TargetChanged;
 
     [HideInInspector]
     public bool _ListenToInput;
@@ -74,20 +69,13 @@ public class PlayerShooter : MonoBehaviour
         _playerInput.Player.Move.Disable();
         _playerInput.Player.Shoot.Disable();
 
-        Target = null;
+        _target = null;
     }
 
     void Update()
     {
-        if (!_ListenToInput)
-        {
-            Target = null;
-            return;
-        }
-
-
-        // Calculate target direction
-        Vector2 aimDirection;
+        // Retrieve the input direction
+        Vector2 input;
 
         if (Mouse.current.rightButton.isPressed || Mouse.current.rightButton.wasReleasedThisFrame)
         {
@@ -99,62 +87,105 @@ public class PlayerShooter : MonoBehaviour
             var clickedPosition = ray.GetPoint(enter);
 
             // - Map the clicked position to an input vector
-            const float minimumDistance = 0.25f;
-            var delta = clickedPosition - transform.position;
-            aimDirection = delta.magnitude >= minimumDistance ? delta.normalized : Vector2.zero;
+            input = (clickedPosition - transform.position).normalized;
+        }
+        else
+        {
+            input = _playerInput.Player.Move.ReadValue<Vector2>().normalized;
+        }
+
+
+
+        // Smoothly transition the shooting direction towards the input direction if the player makes an input
+        if (input != Vector2.zero)
+        {
+            var angleToInput = Vector3.SignedAngle(_shootingDirection, input, Vector3.back);
+
+            var deltaAngle = Mathf.Sign(angleToInput) * _aimingAngularChange.Evaluate(Mathf.Abs(angleToInput)) * Time.deltaTime;
+
+            _shootingDirection = Quaternion.AngleAxis(deltaAngle, Vector3.back) * _shootingDirection;
+        }
+
+
+
+        // Update the shooting direction indicator
+        if (!_ListenToInput)
+        {
+            // Disable the aim indicator
+            _aimIndicator.enabled = false;
         } else
         {
-            aimDirection = _playerInput.Player.Move.ReadValue<Vector2>().normalized;
+            // Update the aim indicator
+            _aimIndicator.enabled = true;
+            _aimIndicator.positionCount = 2;
+            _aimIndicator.SetPosition(0, transform.position);
+            _aimIndicator.SetPosition(1, transform.position + (Vector3)_shootingDirection * _range);
         }
 
 
 
-        // Update the currently targeted shootable
+        // Update target and visuals of shootables
+        _target = null;
 
-        Shootable updatedTarget = null;
+        float targetDeltaAngle = Mathf.Infinity;
 
-        if (aimDirection != Vector2.zero)
+        for (int i = 0; i < _activeShootables.Count; i++)
         {
-            float targetAngle = Mathf.Infinity;
+            var shootable = _activeShootables.Get(i);
 
-            for (int i = 0; i < _shootables.Count; i++)
+            var delta = shootable.transform.position - transform.position;
+
+            // Filter by distance
+            var sqrDistance = Vector2.SqrMagnitude(delta);
+
+            if (sqrDistance > _squaredRange)
             {
-                var target = _shootables.Get(i);
+                shootable.ShowAsNotTargetable();
+                continue;
+            }
 
-                var delta = target.transform.position - transform.position;
+            shootable.ShowAsTargetable();
 
-                // Filter by enabled
-                if (!target.gameObject.activeInHierarchy)
-                    continue;
+            // Filter by angle
+            var angle = Vector2.Angle(_shootingDirection, delta);
 
-                // Filter by distance
-                var sqrDistance = Vector2.SqrMagnitude(delta);
-
-                if (sqrDistance > _squaredRange)
-                    continue;
-
-                // Filter by angle
-                var angle = Vector2.Angle(aimDirection, delta);
-
-                if (angle > targetAngle || angle > _maximumAngleError)
-                    continue;
-
+            if (angle < Mathf.Min(targetDeltaAngle, _maximumAngleError))
+            {
                 // We have found a better target than before. Therefore save this as the new target
-                updatedTarget = target;
-                targetAngle = angle;
+                _target = shootable;
+                targetDeltaAngle = angle;
             }
         }
-
-        Target = updatedTarget;
 
 
 
         // Shoot if the player releases the button
-        if (_playerInput.Player.Shoot.WasReleasedThisFrame() && Target != null)
+        if (_playerInput.Player.Shoot.WasReleasedThisFrame() && _target != null)
         {
-            var projectile = Instantiate(_projectile, transform.position, Quaternion.identity, _projectileContainer);
+            var projectile = Instantiate(_projectilePrefab, transform.position, Quaternion.identity, _projectileContainer);
 
-            projectile.Setup(aimDirection, Target);
+            projectile.Setup(_shootingDirection, _target);
+        }
+
+
+
+        UpdateActiveShootableVisuals();
+    }
+
+    void UpdateActiveShootableVisuals()
+    {
+        for (int i = 0; i < _activeShootables.Count; i++)
+        {
+            var shootable = _activeShootables.Get(i);
+
+            var distance = Vector3.SqrMagnitude(shootable.transform.position - transform.position);
+
+            if (distance > _squaredRange)
+                shootable.ShowAsNotTargetable();
+            else if (shootable == _target)
+                shootable.ShowAsTarget();
+            else
+                shootable.ShowAsTargetable();
         }
     }
 
@@ -170,11 +201,6 @@ public class PlayerShooter : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (_playerInput == null)
-            return;
-
-        var _aimDirection = _playerInput.Player.Move.ReadValue<Vector2>().normalized;
-
-        Gizmos.DrawLine(transform.position, transform.position + (Vector3)_aimDirection);
+        Gizmos.DrawLine(transform.position, transform.position + (Vector3)_shootingDirection);
     }
 }

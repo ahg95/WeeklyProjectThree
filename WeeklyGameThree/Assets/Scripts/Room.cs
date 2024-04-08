@@ -26,9 +26,6 @@ public class Room : MonoBehaviour
     Collider2DRuntimeSet _activeMagicShapes;
 
     [SerializeField]
-    ShootableRuntimeSet _activeShootables;
-
-    [SerializeField]
     UnityEvent _roomEntered;
 
     [SerializeField, HideInInspector]
@@ -122,10 +119,6 @@ public class Room : MonoBehaviour
         foreach (var shape in _magicShapes)
             _activeMagicShapes.Add(shape);
 
-        // - Add all shootables in the room to the set of active shootables
-        foreach (var shootable in _shootables)
-            _activeShootables.Add(shootable);
-
         // - Enable all room objects
         foreach (var roomObject in _roomObjects)
             roomObject.Enable();
@@ -156,8 +149,8 @@ public class Room : MonoBehaviour
 
 
         // Remove all shootables in the room from the set of active shootables
-        foreach (var shootable in _shootables)
-            _activeShootables.Remove(shootable);
+        //foreach (var shootable in _shootables)
+        //    _activeShootables.Remove(shootable);
     }
 
     private void OnTriggerStay2D(Collider2D collision)

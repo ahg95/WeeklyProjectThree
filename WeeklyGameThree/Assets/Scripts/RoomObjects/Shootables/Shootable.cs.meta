@@ -3,7 +3,9 @@ guid: 01f657ef1cc910d458650f5d4443521d
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - _activeShootables: {fileID: 11400000, guid: f65d5f5e2edeb3943bbddb1d360ae04c, type: 2}
+  - _targetMarker: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

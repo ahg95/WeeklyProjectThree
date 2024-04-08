@@ -1,18 +1,22 @@
 using System;
 using UnityEngine;
 
-public class Shootable : MonoBehaviour
+public class Shootable : MonoBehaviour, RoomObject
 {
     [SerializeField]
-    GameObject _targetMarker;
+    ShootableRuntimeSet _activeShootables;
 
-    static PlayerShooter _aimer;
+    [SerializeField]
+    GameObject _targetIndicator;
+
+    [SerializeField]
+    SpriteRenderer _renderer;
 
     public Action _WasShot;
 
     private void Awake()
     {
-        _targetMarker.SetActive(false);
+        _targetIndicator.SetActive(false);
     }
 
     public void OnHit()
@@ -22,21 +26,36 @@ public class Shootable : MonoBehaviour
 
     private void OnEnable()
     {
-        if (_aimer == null)
-            _aimer = FindObjectOfType<PlayerShooter>(true);
-
-        if (_aimer != null)
-            _aimer._TargetChanged += OnAimerTargetChanged;
+        _activeShootables.Add(this);
     }
 
     private void OnDisable()
     {
-        if (_aimer != null)
-            _aimer._TargetChanged -= OnAimerTargetChanged;
+        _activeShootables.Remove(this);
+
+        ShowAsNotTargetable();
     }
 
-    void OnAimerTargetChanged(Shootable target)
+    public void ShowAsNotTargetable()
     {
-        _targetMarker.SetActive(target == this);
+        _renderer.color = new Color(1, 1, 1, 0.5f);
+        _targetIndicator.SetActive(false);
+    }
+
+    public void ShowAsTargetable()
+    {
+        _renderer.color = Color.white;
+        _targetIndicator.SetActive(false);
+    }
+
+    public void ShowAsTarget()
+    {
+        _renderer.color = Color.white;
+        _targetIndicator.SetActive(true);
+    }
+
+    public void ResetRoomObject()
+    {
+        ShowAsNotTargetable();
     }
 }
