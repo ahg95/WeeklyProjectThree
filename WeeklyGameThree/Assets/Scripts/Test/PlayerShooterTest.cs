@@ -6,7 +6,7 @@ public class PlayerShooterTest : MonoBehaviour
     ShootableRuntimeSet _activeShootables;
 
     [SerializeField]
-    PlayerShooter _playerShooter;
+    PlayerAimer _playerShooter;
 
     private void Awake()
     {

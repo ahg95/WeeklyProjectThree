@@ -22,15 +22,15 @@ public class TeleportShootable : MonoBehaviour
 
     private void OnEnable()
     {
-        _shootable._WasShot += OnShot;
+        _shootable._WasHit += OnHit;
     }
 
     private void OnDisable()
     {
-        _shootable._WasShot -= OnShot;
+        _shootable._WasHit -= OnHit;
     }
 
-    void OnShot()
+    void OnHit(Vector2 hitDirection)
     {
         _player.position = transform.position;
         gameObject.SetActive(false);

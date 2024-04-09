@@ -96,18 +96,30 @@ public class PlayerHealth : MonoBehaviour
         }
 
 
+
         var inMagicRatio = (float)nrOfSamplingPointsInMagic / _samplePositions.Count;
 
         if (inMagicRatio > 0.95f)
-        {
-            _currentHealth.RuntimeValue = 0;
-            _healthDepleted.Raise();
-        }
+            Die();
     }
 
     public void ResetHealth()
     {
         _currentHealth.RuntimeValue = _maxHealth;
+    }
+
+    public void Die()
+    {
+        _currentHealth.RuntimeValue = 0;
+        _healthDepleted.Raise();
+
+        Debug.Log("Player died");
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Enemy")
+            Die();
     }
 
 #if UNITY_EDITOR

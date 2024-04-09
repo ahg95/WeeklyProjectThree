@@ -9,7 +9,7 @@ public class ActivateShootableTest : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            _shootable.OnHit();
+            _shootable.OnHit(Vector2.right);
         }
     }
 }

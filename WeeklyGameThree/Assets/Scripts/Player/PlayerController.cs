@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     PlayerMover _playerMover;
 
     [SerializeField]
-    PlayerShooter _playerShooter;
+    PlayerAimer _playerShooter;
 
     [Header("Variables")]
     [SerializeField]

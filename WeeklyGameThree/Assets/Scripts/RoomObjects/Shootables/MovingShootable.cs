@@ -22,12 +22,12 @@ public class MovingShootable : MonoBehaviour, RoomObject
 
     private void OnEnable()
     {
-        _shootable._WasShot += OnShot;
+        _shootable._WasHit += OnShot;
     }
 
     private void OnDisable()
     {
-        _shootable._WasShot -= OnShot;
+        _shootable._WasHit -= OnShot;
     }
 
     private void OnValidate()
@@ -36,7 +36,7 @@ public class MovingShootable : MonoBehaviour, RoomObject
             transform.position = _path.GetPoint(0);
     }
 
-    void OnShot()
+    void OnShot(Vector2 hitDirection)
     {
         if (_isMoving)
             return;

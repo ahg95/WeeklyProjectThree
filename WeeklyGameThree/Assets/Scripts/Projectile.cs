@@ -1,5 +1,4 @@
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class Projectile : MonoBehaviour
 {
@@ -46,10 +45,26 @@ public class Projectile : MonoBehaviour
         _movementCurve._Points[1] = transform.position + (Vector3)StartDirection * _curveFactor * _initialTargetDistance;
         _movementCurve._Points[2] = targetPosition + (_movementCurve._Points[1] - targetPosition).normalized * _curveFactor * _initialTargetDistance;
         _movementCurve._Points[3] = targetPosition;
+
+        // Invoke event of shootable
+        Target.OnShotFiredAt();
+
     }
 
     void Update()
     {
+        // Save the position before this projectile has been moved. Used to calculate the direction from which the shootable has been hit.
+        var positionBeforeMove = transform.position;
+
+
+
+        // Update the movement curve because the target might have moved
+        var targetPosition = _target.transform.position;
+        _movementCurve._Points[2] = targetPosition + (_movementCurve._Points[1] - targetPosition).normalized * _curveFactor * _initialTargetDistance;
+        _movementCurve._Points[3] = targetPosition;
+
+
+        // Move this projectile along the curve
         var t = Mathf.Clamp01((Time.time - _timeOfCreation) / (_flyingDuration * _initialTargetDistance));
 
         t = _accelerationCurve.Evaluate(t);
@@ -59,7 +74,8 @@ public class Projectile : MonoBehaviour
         // Hit the target and destroy this projectile if it is at the target position
         if (t == 1)
         {
-            _target.OnHit();
+            var delta = transform.position - positionBeforeMove;
+            _target.OnHit(delta);
             Destroy(gameObject);
         }
     }

@@ -145,12 +145,6 @@ public class Room : MonoBehaviour
         // Remove all magic shapes in the room from the set of active magic shapes
         foreach (var magicShape in _magicShapes)
             _activeMagicShapes.Remove(magicShape);
-
-
-
-        // Remove all shootables in the room from the set of active shootables
-        //foreach (var shootable in _shootables)
-        //    _activeShootables.Remove(shootable);
     }
 
     private void OnTriggerStay2D(Collider2D collision)

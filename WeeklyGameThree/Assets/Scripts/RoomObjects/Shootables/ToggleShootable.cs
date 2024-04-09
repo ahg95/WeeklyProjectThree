@@ -30,15 +30,15 @@ public class ToggleShootable : MonoBehaviour, RoomObject
 
     private void OnEnable()
     {
-        _shootable._WasShot += OnShot;
+        _shootable._WasHit += OnHit;
     }
 
     private void OnDisable()
     {
-        _shootable._WasShot -= OnShot;
+        _shootable._WasHit -= OnHit;
     }
 
-    void OnShot()
+    void OnHit(Vector2 hitDirection)
     {
         _scaleIsIncreasing = !_scaleIsIncreasing;
         _renderer.sprite = _scaleIsIncreasing ? _enabledSprite : _disabledSprite;

@@ -12,16 +12,27 @@ public class Shootable : MonoBehaviour, RoomObject
     [SerializeField]
     SpriteRenderer _renderer;
 
-    public Action _WasShot;
+    public bool _CanBeTargeted;
+
+    public Action _WasShotAt;
+
+    public Action<Vector2> _WasHit;
 
     private void Awake()
     {
         _targetIndicator.SetActive(false);
+
+        _CanBeTargeted = true;
     }
 
-    public void OnHit()
+    public void OnHit(Vector2 hitDirection)
     {
-        _WasShot?.Invoke();
+        _WasHit?.Invoke(hitDirection);
+    }
+
+    public void OnShotFiredAt()
+    {
+        _WasShotAt?.Invoke();
     }
 
     private void OnEnable()
