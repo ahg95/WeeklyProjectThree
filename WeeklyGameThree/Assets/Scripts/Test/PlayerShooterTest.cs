@@ -6,7 +6,7 @@ public class PlayerShooterTest : MonoBehaviour
     ShootableRuntimeSet _activeShootables;
 
     [SerializeField]
-    PlayerAimer _playerShooter;
+    PlayerProjectileShooter _playerProjectileShooter;
 
     private void Awake()
     {
@@ -21,6 +21,6 @@ public class PlayerShooterTest : MonoBehaviour
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
-            _playerShooter.DeleteAllProjectiles();
+            _playerProjectileShooter.DeleteAllProjectiles();
     }
 }

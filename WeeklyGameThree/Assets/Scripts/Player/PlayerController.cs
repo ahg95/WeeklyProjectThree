@@ -10,7 +10,10 @@ public class PlayerController : MonoBehaviour
     PlayerMover _playerMover;
 
     [SerializeField]
-    PlayerAimer _playerShooter;
+    PlayerAimer _playerAimer;
+
+    [SerializeField]
+    PlayerProjectileShooter _playerProjectileShooter;
 
     [Header("Variables")]
     [SerializeField]
@@ -23,7 +26,7 @@ public class PlayerController : MonoBehaviour
         _playerInput = new();
 
         _playerMover._ListenToInput = true;
-        _playerShooter._ListenToInput = false;
+        _playerAimer._ShowIndicator = false;
     }
 
     private void OnEnable()
@@ -41,7 +44,7 @@ public class PlayerController : MonoBehaviour
         if (_playerInput.Player.Shoot.WasPressedThisFrame())
         {
             _playerMover._ListenToInput = false;
-            _playerShooter._ListenToInput = true;
+            _playerAimer._ShowIndicator = true;
         }
     }
 
@@ -51,14 +54,14 @@ public class PlayerController : MonoBehaviour
         if (_playerInput.Player.Shoot.WasReleasedThisFrame())
         {
             _playerMover._ListenToInput = true;
-            _playerShooter._ListenToInput = false;
+            _playerAimer._ShowIndicator = false;
         }
     }
 
     public void Die()
     {
         _playerMover._ListenToInput = false;
-        _playerShooter._ListenToInput = false;
+        _playerAimer._ShowIndicator = false;
     }
 
     public void Respawn()
@@ -67,9 +70,9 @@ public class PlayerController : MonoBehaviour
         _rigidbody.velocity = Vector2.zero;
 
         _playerMover._ListenToInput = true;
-        _playerShooter._ListenToInput = false;
+        _playerAimer._ShowIndicator = false;
 
         _playerMover.ResetDashCooldown();
-        _playerShooter.DeleteAllProjectiles();
+        _playerProjectileShooter.DeleteAllProjectiles();
     }
 }
