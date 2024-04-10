@@ -20,8 +20,6 @@ public class PlayerAimer : MonoBehaviour
     [SerializeField]
     float _indicatorRange;
 
-    Vector2 _shootingDirection = Vector2.right;
-
     [HideInInspector]
     public bool _ShowIndicator;
 
@@ -36,7 +34,7 @@ public class PlayerAimer : MonoBehaviour
         private set => _aimDirection = value;
     }
 
-    Vector2 _aimDirection;
+    Vector2 _aimDirection = Vector2.right;
 
     private void Awake()
     {
@@ -80,11 +78,11 @@ public class PlayerAimer : MonoBehaviour
         // Smoothly transition the shooting direction towards the input direction if the player makes an input
         if (input != Vector2.zero)
         {
-            var angleToInput = Vector3.SignedAngle(_shootingDirection, input, Vector3.back);
+            var angleToInput = Vector3.SignedAngle(_aimDirection, input, Vector3.back);
 
             var deltaAngle = Mathf.Sign(angleToInput) * _aimingAngularChange.Evaluate(Mathf.Abs(angleToInput)) * Time.deltaTime;
 
-            _shootingDirection = Quaternion.AngleAxis(deltaAngle, Vector3.back) * _shootingDirection;
+            _aimDirection = Quaternion.AngleAxis(deltaAngle, Vector3.back) * _aimDirection;
         }
 
 
@@ -100,12 +98,12 @@ public class PlayerAimer : MonoBehaviour
             _aimIndicator.enabled = true;
             _aimIndicator.positionCount = 2;
             _aimIndicator.SetPosition(0, transform.position);
-            _aimIndicator.SetPosition(1, transform.position + (Vector3)_shootingDirection * _indicatorRange);
+            _aimIndicator.SetPosition(1, transform.position + (Vector3)_aimDirection * _indicatorRange);
         }
     }
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawLine(transform.position, transform.position + (Vector3)_shootingDirection);
+        Gizmos.DrawLine(transform.position, transform.position + (Vector3)_aimDirection);
     }
 }
