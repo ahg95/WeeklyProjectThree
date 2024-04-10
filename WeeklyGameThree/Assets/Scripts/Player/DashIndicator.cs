@@ -6,10 +6,10 @@ public class DashIndicator : MonoBehaviour
     BoolVariable _playerCanDash;
 
     [SerializeField]
-    GameObject _dashIndicator;
+    SpriteRenderer _dashIndicator;
 
     private void LateUpdate()
     {
-        _dashIndicator.SetActive(_playerCanDash.RuntimeValue);
+        _dashIndicator.enabled = _playerCanDash.RuntimeValue;
     }
 }
