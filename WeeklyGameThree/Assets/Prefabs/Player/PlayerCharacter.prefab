@@ -93,7 +93,7 @@ MonoBehaviour:
   _aimer: {fileID: 2038234608982143075}
   _activeShootables: {fileID: 11400000, guid: f65d5f5e2edeb3943bbddb1d360ae04c, type: 2}
   _range: 5
-  _maximumAngleError: 15
+  _maximumAngleError: 25
 --- !u!1 &2100204904828526021
 GameObject:
   m_ObjectHideFlags: 0
@@ -794,7 +794,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7817418357033157141
 Transform:
   m_ObjectHideFlags: 0

@@ -13,6 +13,13 @@ public class PlayerAimer : MonoBehaviour
     [SerializeField]
     LineRenderer _aimIndicator;
 
+    [Header("Variables")]
+    [SerializeField]
+    BoolVariable _isAiming;
+
+    [SerializeField]
+    Vector2Variable _aimDirectionVariable;
+
     [Header("Parameters")]
     [SerializeField]
     AnimationCurve _aimingAngularChange;
@@ -83,6 +90,8 @@ public class PlayerAimer : MonoBehaviour
             var deltaAngle = Mathf.Sign(angleToInput) * _aimingAngularChange.Evaluate(Mathf.Abs(angleToInput)) * Time.deltaTime;
 
             _aimDirection = Quaternion.AngleAxis(deltaAngle, Vector3.back) * _aimDirection;
+
+            _aimDirectionVariable.RuntimeValue = _aimDirection;
         }
 
 
@@ -90,10 +99,20 @@ public class PlayerAimer : MonoBehaviour
         // Update the shooting direction indicator
         if (!_ShowIndicator)
         {
+            // Communicate that the player is aiming
+            _isAiming.RuntimeValue = false;
+
+
+
             // Disable the aim indicator
             _aimIndicator.enabled = false;
         } else
         {
+            // Communicate that the player is not aiming anymore
+            _isAiming.RuntimeValue = true;
+
+
+
             // Update the aim indicator
             _aimIndicator.enabled = true;
             _aimIndicator.positionCount = 2;

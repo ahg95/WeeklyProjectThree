@@ -6,7 +6,7 @@ Shader "Custom/Player"
         _SubTex ("RenderTexture", 2D) = "white" {}
         _FirstOutlineColor("FirstOutlineColor", Color) = (0,0,0,1)
         _SecondOultineColor("SecondOutlineColor", Color) = (1,1,1,1)
-    } 
+    }
 
     SubShader 
     {

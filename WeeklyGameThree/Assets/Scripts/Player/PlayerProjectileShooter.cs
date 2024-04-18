@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerProjectileShooter : MonoBehaviour
 {
@@ -16,6 +15,10 @@ public class PlayerProjectileShooter : MonoBehaviour
     [Header("Variables")]
     [SerializeField]
     ShootableRuntimeSet _activeShootables;
+
+    [Header("Events")]
+    [SerializeField]
+    SimpleGameEvent _playerShot;
 
     [Header("Parameters")]
     [SerializeField]
@@ -97,6 +100,8 @@ public class PlayerProjectileShooter : MonoBehaviour
         // Shoot if the player releases the button
         if (_playerInput.Player.Shoot.WasReleasedThisFrame() && _target != null)
         {
+            _playerShot.Raise();
+
             var projectile = Instantiate(_projectilePrefab, transform.position, Quaternion.identity, _projectileContainer);
 
             projectile.Setup(_aimer.AimDirection, _target);

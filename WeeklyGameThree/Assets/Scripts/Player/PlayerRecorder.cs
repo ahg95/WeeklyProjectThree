@@ -11,27 +11,39 @@ public class PlayerRecorder : MonoBehaviour
     [SerializeField]
     Animator _animator;
 
+    [Header("Variables")]
+    [SerializeField]
+    BoolVariable _isDashing;
+
+    [SerializeField]
+    BoolVariable _isAiming;
+
+    [SerializeField]
+    Vector2Variable _aimingDirection;
+
     bool _isDying;
 
-    private void Update()
+    private void LateUpdate()
     {
+        _animator.SetBool("Dashing", _isDashing.RuntimeValue);
+
+        _animator.SetBool("Aiming", _isAiming.RuntimeValue);
+
+        var movement = _playerRigidbody.velocity;
+
+        _animator.SetFloat("MovementSpeed", movement.magnitude);
+
+        // Rotate player model
         if (!_isDying)
         {
-            ShowPlayerAnimationForMovement(_playerRigidbody.velocity);
+            if (!_isAiming.RuntimeValue && movement != Vector2.zero) {
+                var angle = Mathf.Atan2(movement.x, movement.y) * Mathf.Rad2Deg;
+                _playerModel.rotation = Quaternion.AngleAxis(angle, Vector3.up);
+            } else if (_isAiming.RuntimeValue) {
+                var angle = Mathf.Atan2(_aimingDirection.RuntimeValue.x, _aimingDirection.RuntimeValue.y) * Mathf.Rad2Deg;
+                _playerModel.rotation = Quaternion.AngleAxis(angle, Vector3.up);
+            }
         }
-    }
-
-    void ShowPlayerAnimationForMovement(Vector2 movement)
-    {
-        // Rotate player model
-        if (movement != Vector2.zero)
-        {
-            var angle = Mathf.Atan2(movement.x, movement.y) * Mathf.Rad2Deg;
-            _playerModel.rotation = Quaternion.AngleAxis(angle, Vector3.up);
-        }
-
-        // Set movement speed
-        _animator.SetFloat("MovementSpeed", movement.magnitude);
     }
 
     public void StartDying()
@@ -44,5 +56,10 @@ public class PlayerRecorder : MonoBehaviour
     {
         _animator.SetBool("Dead", false);
         _isDying = false;
+    }
+
+    public void Shoot()
+    {
+        _animator.SetTrigger("Shoot");
     }
 }
