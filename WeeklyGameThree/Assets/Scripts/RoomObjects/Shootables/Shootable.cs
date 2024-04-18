@@ -1,4 +1,5 @@
 using System;
+using UnityEditor.Animations;
 using UnityEngine;
 
 public class Shootable : MonoBehaviour, RoomObject
@@ -7,10 +8,7 @@ public class Shootable : MonoBehaviour, RoomObject
     ShootableRuntimeSet _activeShootables;
 
     [SerializeField]
-    GameObject _targetIndicator;
-
-    [SerializeField]
-    SpriteRenderer _renderer;
+    Animator _animator;
 
     public bool _CanBeTargeted;
 
@@ -20,7 +18,7 @@ public class Shootable : MonoBehaviour, RoomObject
 
     private void Awake()
     {
-        _targetIndicator.SetActive(false);
+        _animator.SetBool("IsTarget", false);
 
         _CanBeTargeted = true;
     }
@@ -49,20 +47,20 @@ public class Shootable : MonoBehaviour, RoomObject
 
     public void ShowAsNotTargetable()
     {
-        _renderer.color = new Color(1, 1, 1, 0.5f);
-        _targetIndicator.SetActive(false);
+        _animator.SetBool("IsTarget", false);
+        _animator.SetBool("IsTargetable", false);
     }
 
     public void ShowAsTargetable()
     {
-        _renderer.color = Color.white;
-        _targetIndicator.SetActive(false);
+        _animator.SetBool("IsTarget", false);
+        _animator.SetBool("IsTargetable", true);
     }
 
     public void ShowAsTarget()
     {
-        _renderer.color = Color.white;
-        _targetIndicator.SetActive(true);
+        _animator.SetBool("IsTarget", true);
+        _animator.SetBool("IsTargetable", false);
     }
 
     public void ResetRoomObject()
