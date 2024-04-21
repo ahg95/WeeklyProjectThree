@@ -11,9 +11,21 @@ public class PlayerRecorder : MonoBehaviour
     [SerializeField]
     Animator _animator;
 
+    [SerializeField]
+    Texture _defaultTexture;
+
+    [SerializeField]
+    Texture _canDashTexture;
+
+    [SerializeField]
+    Material _material;
+
     [Header("Variables")]
     [SerializeField]
     BoolVariable _isDashing;
+
+    [SerializeField]
+    BoolVariable _canDash;
 
     [SerializeField]
     BoolVariable _isAiming;
@@ -25,6 +37,12 @@ public class PlayerRecorder : MonoBehaviour
 
     private void LateUpdate()
     {
+        // Switch out the material depending on if the player can dash or not
+        if (_canDash.RuntimeValue)
+            _material.mainTexture = _canDashTexture;
+        else
+            _material.mainTexture = _defaultTexture;
+
         _animator.SetBool("Dashing", _isDashing.RuntimeValue);
 
         _animator.SetBool("Aiming", _isAiming.RuntimeValue);
