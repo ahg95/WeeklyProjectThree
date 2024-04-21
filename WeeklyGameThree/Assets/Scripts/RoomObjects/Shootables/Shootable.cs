@@ -1,5 +1,4 @@
 using System;
-using UnityEditor.Animations;
 using UnityEngine;
 
 public class Shootable : MonoBehaviour, RoomObject
@@ -8,7 +7,10 @@ public class Shootable : MonoBehaviour, RoomObject
     ShootableRuntimeSet _activeShootables;
 
     [SerializeField]
-    Animator _animator;
+    Animator _targetAnimator;
+
+    [SerializeField]
+    Animator _hitAnimator;
 
     public bool _CanBeTargeted;
 
@@ -18,7 +20,7 @@ public class Shootable : MonoBehaviour, RoomObject
 
     private void Awake()
     {
-        _animator.SetBool("IsTarget", false);
+        _targetAnimator.SetBool("IsTarget", false);
 
         _CanBeTargeted = true;
     }
@@ -26,6 +28,7 @@ public class Shootable : MonoBehaviour, RoomObject
     public void OnHit(Vector2 hitDirection)
     {
         _WasHit?.Invoke(hitDirection);
+        _hitAnimator.SetTrigger("Hit");
     }
 
     public void OnShotFiredAt()
@@ -47,20 +50,20 @@ public class Shootable : MonoBehaviour, RoomObject
 
     public void ShowAsNotTargetable()
     {
-        _animator.SetBool("IsTarget", false);
-        _animator.SetBool("IsTargetable", false);
+        _targetAnimator.SetBool("IsTarget", false);
+        _targetAnimator.SetBool("IsTargetable", false);
     }
 
     public void ShowAsTargetable()
     {
-        _animator.SetBool("IsTarget", false);
-        _animator.SetBool("IsTargetable", true);
+        _targetAnimator.SetBool("IsTarget", false);
+        _targetAnimator.SetBool("IsTargetable", true);
     }
 
     public void ShowAsTarget()
     {
-        _animator.SetBool("IsTarget", true);
-        _animator.SetBool("IsTargetable", false);
+        _targetAnimator.SetBool("IsTarget", true);
+        _targetAnimator.SetBool("IsTargetable", false);
     }
 
     public void ResetRoomObject()
