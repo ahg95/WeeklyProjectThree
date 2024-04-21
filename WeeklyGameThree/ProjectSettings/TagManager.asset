@@ -51,3 +51,6 @@ TagManager:
   - name: Shootable
     uniqueID: 2962454723
     locked: 0
+  - name: Collectable
+    uniqueID: 1864349707
+    locked: 0
