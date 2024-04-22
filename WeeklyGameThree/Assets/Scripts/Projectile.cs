@@ -53,9 +53,8 @@ public class Projectile : MonoBehaviour
 
     void Update()
     {
-        // Save the position before this projectile has been moved. Used to calculate the direction from which the shootable has been hit.
+        // Save the position before this projectile has been moved. Used to calculate the direction from which the shootable has been hit and the rotation of the projectile.
         var positionBeforeMove = transform.position;
-
 
 
         // Update the movement curve because the target might have moved
@@ -70,6 +69,16 @@ public class Projectile : MonoBehaviour
         t = _accelerationCurve.Evaluate(t);
 
         transform.position = _movementCurve.Evaluate(t);
+
+
+        // Rotate the projectile
+        var deltaPosition = transform.position - positionBeforeMove;
+
+        var targetAngle = Mathf.Atan2(deltaPosition.y, deltaPosition.x) * 180 / Mathf.PI;
+
+        transform.rotation = Quaternion.AngleAxis(targetAngle, Vector3.forward);
+
+
 
         // Hit the target and destroy this projectile if it is at the target position
         if (t == 1)
