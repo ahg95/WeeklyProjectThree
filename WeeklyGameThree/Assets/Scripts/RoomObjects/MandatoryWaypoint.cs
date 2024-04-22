@@ -12,20 +12,19 @@ public class MandatoryWaypoint : MonoBehaviour, RoomObject
 
     [Header("References")]
     [SerializeField]
-    Sprite _unreachedSprite;
-
-    [SerializeField]
-    Sprite _reachedSprite;
+    Animator _animator;
 
     [Header("Game Variables")]
     [SerializeField]
     BoolVariable _allWaypointsReached;
 
-    SpriteRenderer _renderer;
-
     bool _isReached;
 
-    bool _isSetup;
+    private void Awake()
+    {
+        if (_playerLayer == -1)
+            _playerLayer = LayerMask.NameToLayer("Player");
+    }
 
     private void OnEnable()
     {
@@ -49,32 +48,24 @@ public class MandatoryWaypoint : MonoBehaviour, RoomObject
         // The mandatory waypoint has been reached
         _nrOfReachedWaypoints++;
         _isReached = true;
-        _renderer.sprite = _reachedSprite;
+
+
+        // Trigger the appropriate animation
+        _animator.SetBool("Reached", true);
+
 
         _allWaypointsReached.RuntimeValue = _nrOfReachedWaypoints == _totalNrOfWaypoints;
     }
 
     public void ResetRoomObject()
     {
-        SetupIfNecessary();
-
         if (_isReached)
             _nrOfReachedWaypoints--;
 
         _allWaypointsReached.RuntimeValue = _nrOfReachedWaypoints == _totalNrOfWaypoints;
 
         _isReached = false;
-        _renderer.sprite = _unreachedSprite;
-    }
 
-    void SetupIfNecessary()
-    {
-        if (_isSetup)
-            return;
-
-        _playerLayer = LayerMask.NameToLayer("Player");
-        _renderer = GetComponent<SpriteRenderer>();
-
-        _isSetup = true;
+        _animator.SetBool("Reached", false);
     }
 }
