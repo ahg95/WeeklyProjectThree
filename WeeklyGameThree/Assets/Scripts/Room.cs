@@ -125,6 +125,10 @@ public class Room : MonoBehaviour
         foreach (var shape in _magicShapes)
             _activeMagicShapes.Add(shape);
 
+        // - Add all safe zones in the room to the set of active safe zones
+        foreach (var safeZone in _safeZones)
+            _activeSafeZones.Add(safeZone);
+
         // - Enable all room objects
         foreach (var roomObject in _roomObjects)
             roomObject.Enable();

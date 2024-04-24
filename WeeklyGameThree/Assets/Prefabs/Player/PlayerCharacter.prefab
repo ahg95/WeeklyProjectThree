@@ -599,9 +599,8 @@ MonoBehaviour:
   _healthDepleted: {fileID: 11400000, guid: bdd7a943dcf499b49a35c17b61edac07, type: 2}
   _playerIsDodging: {fileID: 11400000, guid: cff3f3cc179bf4840a133665a43be6fd, type: 2}
   _magicShapes: {fileID: 11400000, guid: 1da7873ef69904647932212006af1994, type: 2}
+  _safeZones: {fileID: 11400000, guid: 20fef4822d42c774dafbc4f765568fcb, type: 2}
   _damagePerSecond: 100
-  _sampleAreaSize: {x: 1, y: 1.25}
-  _samplingDistance: 0.2
 --- !u!114 &3079456450892201801
 MonoBehaviour:
   m_ObjectHideFlags: 0
