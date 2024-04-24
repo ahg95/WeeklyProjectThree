@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Drawing;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -23,44 +24,18 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField]
     RuntimeSet<Collider2D> _magicShapes;
 
+    [SerializeField]
+    RuntimeSet<Collider2D> _safeZones;
+
     [Header("Parameters")]
     [SerializeField]
     float _damagePerSecond;
-
-    [SerializeField]
-    Vector2 _sampleAreaSize;
-
-    [SerializeField]
-    float _samplingDistance;
-
-    List<Vector2> _samplePositions = new();
 
     float _maxHealth;
 
     private void Awake()
     {
         _maxHealth = _currentHealth.RuntimeValue;
-
-
-        // Calculate sample positions
-        _samplePositions.Clear();
-
-        var nrOfHorizontalPoints = Mathf.Clamp(Mathf.FloorToInt(_sampleAreaSize.x / _samplingDistance), 2, 10);
-        var nrOfVerticalPoints = Mathf.Clamp(Mathf.FloorToInt(_sampleAreaSize.y / _samplingDistance), 2, 10);
-
-        var horizontalDistance = _sampleAreaSize.x / (nrOfHorizontalPoints - 1);
-        var verticalDistance = _sampleAreaSize.y / (nrOfVerticalPoints - 1);
-
-        for (int widthIndex = 0; widthIndex < nrOfHorizontalPoints; widthIndex++)
-        {
-            for (int heightIndex = 0; heightIndex < nrOfVerticalPoints; heightIndex++)
-            {
-                Vector2 point = new Vector2(widthIndex * horizontalDistance, heightIndex * verticalDistance);
-                point -= _sampleAreaSize / 2;
-
-                _samplePositions.Add(point);
-            }
-        }
     }
 
     void LateUpdate()
@@ -75,32 +50,24 @@ public class PlayerHealth : MonoBehaviour
             return;
 
 
-
-        // Check how many sampling points are inside magic
-        var nrOfSamplingPointsInMagic = 0;
-
-        foreach (var point in _samplePositions)
+        // Check if the player is inside a safe zone
+        for (int i = 0; i < _safeZones.Count; i++)
         {
-            var numberOfOverlappingShapes = 0;
+            var safeZone = _safeZones.Get(i);
 
-            // Iterate through all magic shapes
-            for (int i = 0; i < _magicShapes.Count; i++)
-            {
-                var magicShape = _magicShapes.Get(i);
-
-                if (magicShape.gameObject.activeInHierarchy && magicShape.OverlapPoint((Vector2)transform.position + point))
-                    numberOfOverlappingShapes++;
-            }
-
-            nrOfSamplingPointsInMagic += numberOfOverlappingShapes % 2;
+            if (safeZone.gameObject.activeInHierarchy && safeZone.OverlapPoint((Vector2)transform.position))
+                return;
         }
 
 
+        // Check if the player is inside magic
+        for (int i = 0; i < _magicShapes.Count; i++)
+        {
+            var magicShape = _magicShapes.Get(i);
 
-        var inMagicRatio = (float)nrOfSamplingPointsInMagic / _samplePositions.Count;
-
-        if (inMagicRatio > 0.95f)
-            Die();
+            if (magicShape.gameObject.activeInHierarchy && magicShape.OverlapPoint((Vector2)transform.position))
+                Die();
+        }
     }
 
     public void ResetHealth()
@@ -112,8 +79,6 @@ public class PlayerHealth : MonoBehaviour
     {
         _currentHealth.RuntimeValue = 0;
         _healthDepleted.Raise();
-
-        Debug.Log("Player died");
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -121,30 +86,4 @@ public class PlayerHealth : MonoBehaviour
         if (collision.gameObject.tag == "Enemy")
             Die();
     }
-
-#if UNITY_EDITOR
-    public class PlayerHealthEditor : Editor
-    {
-        [DrawGizmo(GizmoType.Selected)]
-        static void DrawGizmo(PlayerHealth playerHealth, GizmoType gizmo)
-        {
-            Gizmos.color = Color.blue;
-            // Draw the box
-            Gizmos.DrawWireCube(playerHealth.transform.position, new Vector3(playerHealth._sampleAreaSize.x, playerHealth._sampleAreaSize.y));
-
-
-
-            // Draw each sampling point
-            foreach (var point in playerHealth._samplePositions)
-            {
-                Gizmos.DrawSphere(playerHealth.transform.position + (Vector3)point, 0.1f);
-            }
-        }
-
-        public override void OnInspectorGUI()
-        {
-            serializedObject.Update();
-        }
-    }
-#endif
 }

@@ -6030,6 +6030,7 @@ MonoBehaviour:
   _cameraBoundsMin: {fileID: 11400000, guid: b1d739466ea533842ac014d263280d09, type: 2}
   _cameraBoundsMax: {fileID: 11400000, guid: 11689a89908d047428698282f7ad198b, type: 2}
   _activeMagicShapes: {fileID: 11400000, guid: 1da7873ef69904647932212006af1994, type: 2}
+  _activeSafeZones: {fileID: 11400000, guid: 20fef4822d42c774dafbc4f765568fcb, type: 2}
   _roomEntered:
     m_PersistentCalls:
       m_Calls: []
