@@ -24,6 +24,9 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField]
     RuntimeSet<Collider2D> _magicShapes;
 
+    [SerializeField]
+    RuntimeSet<Collider2D> _safeZones;
+
     [Header("Parameters")]
     [SerializeField]
     float _damagePerSecond;
@@ -45,6 +48,16 @@ public class PlayerHealth : MonoBehaviour
         // No need to reduce the health if it is already 0 or if the player is inside a safe zone
         if (_currentHealth.RuntimeValue == 0 || _playerIsInsideSafeZone.RuntimeValue || _playerIsDodging.RuntimeValue)
             return;
+
+
+        // Check if the player is inside a safe zone
+        for (int i = 0; i < _safeZones.Count; i++)
+        {
+            var safeZone = _safeZones.Get(i);
+
+            if (safeZone.gameObject.activeInHierarchy && safeZone.OverlapPoint((Vector2)transform.position))
+                return;
+        }
 
 
         // Check if the player is inside magic

@@ -26,6 +26,9 @@ public class Room : MonoBehaviour
     Collider2DRuntimeSet _activeMagicShapes;
 
     [SerializeField]
+    Collider2DRuntimeSet _activeSafeZones;
+
+    [SerializeField]
     UnityEvent _roomEntered;
 
     [SerializeField, HideInInspector]
@@ -33,6 +36,7 @@ public class Room : MonoBehaviour
 
     List<Shootable> _shootables = new();
     List<Collider2D> _magicShapes = new();
+    List<Collider2D> _safeZones = new();
 
     List<RoomObject> _roomObjects = new();
 
@@ -73,15 +77,17 @@ public class Room : MonoBehaviour
 
     private void Awake()
     {
-        // Find magic shapes
-        // - Also find inactive magic shapes
+        // Find magic shapes and safe zones
         var colliders = GetComponentsInChildren<Collider2D>(true);
 
         var magicLayerIndex = LayerMask.NameToLayer("Magic");
+        var safeZoneLayerIndex = LayerMask.NameToLayer("SafeZone");
 
         foreach (var collider in colliders)
             if (collider.gameObject.layer == magicLayerIndex)
                 _magicShapes.Add(collider);
+            else if (collider.gameObject.layer == safeZoneLayerIndex)
+                _safeZones.Add(collider);
 
         // Find shootables in the room
         _shootables = GetComponentsInChildren<Shootable>(true).ToList();
