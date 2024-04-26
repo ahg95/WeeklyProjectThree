@@ -4,7 +4,10 @@ public class Door : MonoBehaviour, RoomObject
 {
     [Header("References")]
     [SerializeField]
-    GameObject _obstacle;
+    Collider2D _obstacle;
+
+    [SerializeField]
+    Animator _animator;
 
     [Header("Game Variables")]
     [SerializeField]
@@ -15,11 +18,19 @@ public class Door : MonoBehaviour, RoomObject
 
     void LateUpdate()
     {
-        _obstacle.SetActive(!_allDetectorsInMagic.RuntimeValue || !_allMandatoryWaypointsReached.RuntimeValue);
+        UpdateState();
     }
 
     public void ResetRoomObject()
     {
-        _obstacle.SetActive(!_allDetectorsInMagic.RuntimeValue || !_allMandatoryWaypointsReached.RuntimeValue);
+        UpdateState();
+    }
+
+    void UpdateState()
+    {
+        var closed = !_allDetectorsInMagic.RuntimeValue || !_allMandatoryWaypointsReached.RuntimeValue;
+
+        _obstacle.enabled = closed;
+        _animator.SetBool("Opened", !closed);
     }
 }

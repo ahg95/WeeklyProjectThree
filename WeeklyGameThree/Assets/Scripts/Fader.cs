@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Fader : MonoBehaviour
@@ -13,6 +11,7 @@ public class Fader : MonoBehaviour
     public void StartFade()
     {
         _animator.SetTrigger("Fade");
+        Debug.Log("Fade!!!");
     }
 
     public void RaiseEventForEverythingMadeBlack()

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerFollower : MonoBehaviour, RoomObject
+public class FollowingShootable : MonoBehaviour, RoomObject
 {
     [Header("References")]
     [SerializeField]
@@ -10,13 +10,7 @@ public class PlayerFollower : MonoBehaviour, RoomObject
     SpriteRenderer _renderer;
 
     [SerializeField]
-    Sprite _sleepSprite;
-
-    [SerializeField]
-    Sprite _followingSprite;
-
-    [SerializeField]
-    Sprite _stunSprite;
+    ParticleSystem _particleSystem;
 
     [Header("Parameters")]
     [SerializeField]
@@ -51,6 +45,8 @@ public class PlayerFollower : MonoBehaviour, RoomObject
 
     bool _isSleeping = true;
 
+    Vector2 _previousVelocity;
+
     void Awake()
     {
         _shootable = GetComponent<Shootable>();
@@ -76,9 +72,7 @@ public class PlayerFollower : MonoBehaviour, RoomObject
 
         // Find reference to player rigidbody
         if (_toFollow == null)
-        {
             _toFollow = GameObject.FindGameObjectWithTag("Player").transform;
-        }
     }
 
     private void OnEnable()
@@ -102,6 +96,8 @@ public class PlayerFollower : MonoBehaviour, RoomObject
         _shotTime = Time.time;
 
         _hitDirection = hitDirection.normalized;
+
+        _renderer.material.SetInteger("_Flash", 1);
     }
 
     void OnShotAt()
@@ -111,40 +107,43 @@ public class PlayerFollower : MonoBehaviour, RoomObject
 
     private void Update()
     {
-        // Update state
+        // Check if this skull should wake up
         if (_isSleeping)
-        {
             _isSleeping = Vector3.SqrMagnitude(transform.position - _toFollow.position) > _squaredActivationRange;
-        } else
-        {
-            // Make this shootable targetable again if the invincibility time has run out
-            var endOfInvincibilityTime = _shotTime + _invincibilityDuration;
 
-            if (Time.time - Time.deltaTime < endOfInvincibilityTime && Time.time >= endOfInvincibilityTime)
-                _shootable._CanBeTargeted = true;
-        }
-
-
-
-        // Update sprite to state
         if (_isSleeping)
-            _renderer.sprite = _sleepSprite;
-        else
+            return;
+
+
+        // Flip sprite depending on the relative position to the transform to follow
+        _renderer.flipX = transform.position.x < _toFollow.transform.position.x;
+
+
+        // Make this shootable targetable again if the invincibility time has run out
+        var endOfInvincibilityTime = _shotTime + _invincibilityDuration;
+
+        if (Time.time - Time.deltaTime < endOfInvincibilityTime && Time.time >= endOfInvincibilityTime)
         {
-            var endOfStunTime = _shotTime + _stunDuration;
-
-            _renderer.flipX = transform.position.x < _toFollow.transform.position.x;
-
-            if (Time.time < endOfStunTime)
-                _renderer.sprite = _stunSprite;
-            else
-                _renderer.sprite = _followingSprite;
+            _renderer.material.SetInteger("_Flash", 0);
+            _shootable._CanBeTargeted = true;
         }
+
+            
+
+        // Update particle system
+        var forceOverLifetime = _particleSystem.forceOverLifetime;
+        var deltaNormalized = (_previousVelocity - _rigidbody.velocity).normalized;
+        forceOverLifetime.x = new ParticleSystem.MinMaxCurve(deltaNormalized.x * 3);
+        forceOverLifetime.y = new ParticleSystem.MinMaxCurve(deltaNormalized.y * 3);
     }
 
     void FixedUpdate()
     {
-        // If the 
+        // Used to calculate the force to apply to particles
+        _previousVelocity = _rigidbody.velocity;
+
+
+
         if (_shotTime + _stunDuration > Time.time || _isSleeping)
         {
             // Push this shootable away from the shooting direction
@@ -172,5 +171,7 @@ public class PlayerFollower : MonoBehaviour, RoomObject
         _shotTime = -1000;
 
         _shootable._CanBeTargeted = true;
+
+        _renderer.material.SetInteger("_Flash", 0);
     }
 }

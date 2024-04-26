@@ -95,6 +95,9 @@ public class PlayerProjectileShooter : MonoBehaviour
             }
         }
 
+        if (_target != null)
+            _target.ShowAsTarget();
+
 
 
         // Shoot if the player releases the button
@@ -105,27 +108,6 @@ public class PlayerProjectileShooter : MonoBehaviour
             var projectile = Instantiate(_projectilePrefab, transform.position, Quaternion.identity, _projectileContainer);
 
             projectile.Setup(_aimer.AimDirection, _target);
-        }
-
-
-
-        UpdateActiveShootableVisuals();
-    }
-
-    void UpdateActiveShootableVisuals()
-    {
-        for (int i = 0; i < _activeShootables.Count; i++)
-        {
-            var shootable = _activeShootables.Get(i);
-
-            var distance = Vector3.SqrMagnitude(shootable.transform.position - transform.position);
-
-            if (distance > _squaredRange)
-                shootable.ShowAsNotTargetable();
-            else if (shootable == _target)
-                shootable.ShowAsTarget();
-            else
-                shootable.ShowAsTargetable();
         }
     }
 

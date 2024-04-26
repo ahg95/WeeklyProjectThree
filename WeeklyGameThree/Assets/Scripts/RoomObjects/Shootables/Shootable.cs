@@ -12,6 +12,7 @@ public class Shootable : MonoBehaviour, RoomObject
     [SerializeField]
     Animator _hitAnimator;
 
+    [HideInInspector]
     public bool _CanBeTargeted;
 
     public Action _WasShotAt;
@@ -25,17 +26,6 @@ public class Shootable : MonoBehaviour, RoomObject
         _CanBeTargeted = true;
     }
 
-    public void OnHit(Vector2 hitDirection)
-    {
-        _WasHit?.Invoke(hitDirection);
-        _hitAnimator.SetTrigger("Hit");
-    }
-
-    public void OnShotFiredAt()
-    {
-        _WasShotAt?.Invoke();
-    }
-
     private void OnEnable()
     {
         _activeShootables.Add(this);
@@ -46,6 +36,17 @@ public class Shootable : MonoBehaviour, RoomObject
         _activeShootables.Remove(this);
 
         ShowAsNotTargetable();
+    }
+
+    public void OnHit(Vector2 hitDirection)
+    {
+        _WasHit?.Invoke(hitDirection);
+        _hitAnimator.SetTrigger("Hit");
+    }
+
+    public void OnShotFiredAt()
+    {
+        _WasShotAt?.Invoke();
     }
 
     public void ShowAsNotTargetable()

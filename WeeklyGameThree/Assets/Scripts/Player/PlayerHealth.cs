@@ -1,22 +1,13 @@
-using System.Collections.Generic;
 using UnityEngine;
-using System.Drawing;
-
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 public class PlayerHealth : MonoBehaviour
 {
     [Header("References")]
     [SerializeField]
-    BoolVariable _playerIsInsideSafeZone;
+    BoolVariable _playerIsDead;
 
     [SerializeField]
-    FloatVariable _currentHealth;
-
-    [SerializeField]
-    SimpleGameEvent _healthDepleted;
+    SimpleGameEvent _playerDied;
 
     [SerializeField]
     BoolVariable _playerIsDodging;
@@ -27,26 +18,11 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField]
     RuntimeSet<Collider2D> _safeZones;
 
-    [Header("Parameters")]
-    [SerializeField]
-    float _damagePerSecond;
-
-    float _maxHealth;
-
-    private void Awake()
-    {
-        _maxHealth = _currentHealth.RuntimeValue;
-    }
-
     void LateUpdate()
     {
-        AdjustHealth();
-    }
-
-    void AdjustHealth()
-    {
-        // No need to reduce the health if it is already 0 or if the player is inside a safe zone
-        if (_currentHealth.RuntimeValue == 0 || _playerIsInsideSafeZone.RuntimeValue || _playerIsDodging.RuntimeValue)
+        // Kill the player if they are within magic, but not within a safe zone
+        // - No need to kill the player if they are already dead or if they are dashing
+        if (_playerIsDead.RuntimeValue || _playerIsDodging.RuntimeValue)
             return;
 
 
@@ -66,24 +42,12 @@ public class PlayerHealth : MonoBehaviour
             var magicShape = _magicShapes.Get(i);
 
             if (magicShape.gameObject.activeInHierarchy && magicShape.OverlapPoint((Vector2)transform.position))
-                Die();
+            {
+                Debug.Log("KILL!!!");
+                _playerDied.Raise();
+                return;
+            }
+
         }
-    }
-
-    public void ResetHealth()
-    {
-        _currentHealth.RuntimeValue = _maxHealth;
-    }
-
-    public void Die()
-    {
-        _currentHealth.RuntimeValue = 0;
-        _healthDepleted.Raise();
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.tag == "Enemy")
-            Die();
     }
 }

@@ -19,6 +19,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     Vector3Variable _spawnPosition;
 
+    [SerializeField]
+    BoolVariable _playerIsDead;
+
     PlayerInput _playerInput;
 
     private void Awake()
@@ -41,7 +44,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (_playerInput.Player.Shoot.WasPressedThisFrame())
+        if (_playerInput.Player.Shoot.WasPressedThisFrame() && !_playerIsDead.RuntimeValue)
         {
             _playerMover._ListenToInput = false;
             _playerAimer._ShowIndicator = true;
@@ -51,7 +54,7 @@ public class PlayerController : MonoBehaviour
     private void LateUpdate()
     {
         // The PlayerShooter should be disabled in late update so that the PlayerShooter is not disabled before it shoots.
-        if (_playerInput.Player.Shoot.WasReleasedThisFrame())
+        if (_playerInput.Player.Shoot.WasReleasedThisFrame() && !_playerIsDead.RuntimeValue)
         {
             _playerMover._ListenToInput = true;
             _playerAimer._ShowIndicator = false;

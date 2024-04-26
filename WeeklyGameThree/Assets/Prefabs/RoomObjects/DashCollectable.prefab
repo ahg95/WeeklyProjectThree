@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7297103936322661620}
   m_Layer: 0
-  m_Name: Lights (1)
+  m_Name: Lights
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -201,7 +201,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerCanDash: {fileID: 11400000, guid: c014fd43214fcd74fb593249089b7d45, type: 2}
-  _RemoveWhenCollected: 1
+  _RemoveWhenCollected: 0
 --- !u!95 &3698207827096964893
 Animator:
   serializedVersion: 5

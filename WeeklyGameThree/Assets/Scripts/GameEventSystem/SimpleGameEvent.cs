@@ -1,6 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 [CreateAssetMenu(fileName = "newGameEvent", menuName = "GameEvent/Simple")]
 public class SimpleGameEvent : ScriptableObject
 {
@@ -27,3 +31,20 @@ public class SimpleGameEvent : ScriptableObject
         }
     }
 }
+
+
+#if UNITY_EDITOR
+[CustomEditor(typeof(SimpleGameEvent))]
+public class SimpleGameEventEditor : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        if (GUILayout.Button("Invoke Event"))
+        {
+            ((SimpleGameEvent)target).Raise();
+        }
+
+        base.OnInspectorGUI();
+    }
+}
+#endif
