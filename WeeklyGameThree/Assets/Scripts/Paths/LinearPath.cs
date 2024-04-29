@@ -49,6 +49,62 @@ public class LinearPath : Path
     [SerializeField, HideInInspector]
     float _angle;
 
+    [SerializeField, HideInInspector]
+    Vector3 _scale = Vector3.one;
+
+#if UNITY_EDITOR
+
+    private void OnEnable()
+    {
+        SceneView.duringSceneGui += OnSceneGUI;
+    }
+
+    private void OnDisable()
+    {
+        SceneView.duringSceneGui -= OnSceneGUI;
+    }
+
+    private void OnSceneGUI(SceneView sceneView)
+    {
+        var path = this;
+
+        // Visualize each point
+
+        for (int i = 0; i < path._points.Count; i++)
+        {
+            var pointPosition = path._points[i];
+
+
+            // Create handle for the first point
+            float size = HandleUtility.GetHandleSize(pointPosition) * 0.4f;
+            Vector3 snap = Vector3.one * 0.5f;
+
+            Handles.color = Color.blue;
+            if (i == 0)
+                Handles.color = Color.white;
+
+            EditorGUI.BeginChangeCheck();
+
+            Vector3 newPosition = Handles.FreeMoveHandle(pointPosition, size, snap, Handles.SphereHandleCap);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                path._points[i] = newPosition;
+                EditorUtility.SetDirty(path);
+            }
+
+
+            if (!path._isCyclic && i == path._points.Count - 1)
+                continue;
+
+            // Draw the line
+            Handles.color = Color.white;
+            Handles.DrawLine(pointPosition, path._points[(i + 1) % path._points.Count], 5f);
+        }
+    }
+#endif
+
+
     void Update()
     {
         if (!transform.hasChanged)
@@ -67,6 +123,21 @@ public class LinearPath : Path
             // Subtract the previous rotation
             _points[i] = Quaternion.AngleAxis(-_angle, Vector3.forward) * _points[i];
 
+            // Subtract the previous scale
+            var point = _points[i];
+
+            point.x = point.x * (1.0f / _scale.x);
+            point.y = point.y * (1.0f / _scale.y);
+            point.z = point.z * (1.0f / _scale.z);
+
+            // Add the new scale
+
+            point.x = point.x * transform.localScale.x;
+            point.y = point.y * transform.localScale.y;
+            point.z = point.z * transform.localScale.z;
+
+            _points[i] = point;
+
             // Add the new rotation
             _points[i] = Quaternion.AngleAxis(transform.rotation.eulerAngles.z, Vector3.forward) * _points[i];
 
@@ -74,9 +145,11 @@ public class LinearPath : Path
             _points[i] += transform.position;
         }
 
-        // - Store the applied offset and rotation
+        // Store the applied offset and rotation
         _offset = transform.position;
         _angle = transform.rotation.eulerAngles.z;
+        _scale = transform.localScale;
+
 
 
         CalculateDistances();
@@ -131,10 +204,10 @@ public class LinearPath : Path
 
 
         // Setup points
+        _numberOfPoints = Mathf.Max(0, _numberOfPoints);
+
         if (_points == null)
             _points = new(_numberOfPoints);
-
-        _numberOfPoints = Mathf.Max(0, _numberOfPoints);
 
         while (_points.Count > _numberOfPoints)
         {
@@ -143,7 +216,9 @@ public class LinearPath : Path
 
         while (_points.Count < _numberOfPoints)
         {
-            _points.Add(transform.position);
+            var lastPoint = _points[_points.Count - 1];
+
+            _points.Add(lastPoint + new Vector3(1, 1, 0));
         }
 
 
@@ -169,50 +244,27 @@ public class LinearPath : Path
         }
     }
 
+    public void RoundPointPositions()
+    {
+        for (int i = 0; i < _points.Count; i++)
+            _points[i] = _points[i].Round();
+    }
+}
+
 #if UNITY_EDITOR
     [CustomEditor(typeof(LinearPath)), CanEditMultipleObjects]
     public class LinearPathEditor : Editor
     {
-        private void OnSceneGUI()
+        public override void OnInspectorGUI()
         {
-            var path = (LinearPath)target;
+            base.OnInspectorGUI();
 
-            // Visualize each point
-
-            for (int i = 0; i < path._points.Count; i++)
+            if (GUILayout.Button("Snap curve points"))
             {
-                var pointPosition = path._points[i];
+                var composite = (LinearPath)target;
 
-
-                // Create handle for the first point
-                float size = HandleUtility.GetHandleSize(pointPosition) * 0.4f;
-                Vector3 snap = Vector3.one * 0.5f;
-
-                Handles.color = Color.blue;
-                if (i == 0)
-                    Handles.color = Color.white;
-
-                EditorGUI.BeginChangeCheck();
-
-                Vector3 newPosition = Handles.FreeMoveHandle(pointPosition, size, snap, Handles.SphereHandleCap);
-
-                newPosition = newPosition.Round();
-
-                if (EditorGUI.EndChangeCheck())
-                {
-                    path._points[i] = newPosition;
-                    EditorUtility.SetDirty(path);
-                }
-
-
-                if (!path._isCyclic && i == path._points.Count - 1)
-                    continue;
-
-                // Draw the line
-                Handles.color = Color.white;
-                Handles.DrawLine(pointPosition, path._points[(i + 1) % path._points.Count], 5f);
+                composite.RoundPointPositions();
             }
         }
     }
 #endif
-}

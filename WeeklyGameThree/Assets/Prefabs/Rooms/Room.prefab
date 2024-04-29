@@ -4091,6 +4091,7 @@ MonoBehaviour:
   _isSetup: 0
   _offset: {x: 70, y: 20.666668, z: 0}
   _angle: 0
+  _scale: {x: 1, y: 1, z: 1}
 --- !u!1 &7985363515491283817
 GameObject:
   m_ObjectHideFlags: 0
@@ -5971,6 +5972,7 @@ MonoBehaviour:
   _isSetup: 0
   _offset: {x: 70, y: 20.666668, z: 0}
   _angle: 0
+  _scale: {x: 1, y: 1, z: 1}
 --- !u!1 &8675852672558066134
 GameObject:
   m_ObjectHideFlags: 0
