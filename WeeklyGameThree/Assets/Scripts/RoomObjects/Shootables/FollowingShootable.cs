@@ -10,7 +10,7 @@ public class FollowingShootable : MonoBehaviour, RoomObject
     SpriteRenderer _renderer;
 
     [SerializeField]
-    ParticleSystem _particleSystem;
+    Animator _spriteAnimator;
 
     [Header("Parameters")]
     [SerializeField]
@@ -44,8 +44,6 @@ public class FollowingShootable : MonoBehaviour, RoomObject
     Vector3 _initialPosition;
 
     bool _isSleeping = true;
-
-    Vector2 _previousVelocity;
 
     void Awake()
     {
@@ -98,6 +96,7 @@ public class FollowingShootable : MonoBehaviour, RoomObject
         _hitDirection = hitDirection.normalized;
 
         _renderer.material.SetInteger("_Flash", 1);
+        _spriteAnimator.SetBool("Bite", false);
     }
 
     void OnShotAt()
@@ -109,10 +108,14 @@ public class FollowingShootable : MonoBehaviour, RoomObject
     {
         // Check if this skull should wake up
         if (_isSleeping)
+        {
             _isSleeping = Vector3.SqrMagnitude(transform.position - _toFollow.position) > _squaredActivationRange;
 
-        if (_isSleeping)
-            return;
+            if (_isSleeping)
+                return;
+            else
+                _spriteAnimator.SetBool("Bite", true);
+        }
 
 
         // Flip sprite depending on the relative position to the transform to follow
@@ -125,25 +128,13 @@ public class FollowingShootable : MonoBehaviour, RoomObject
         if (Time.time - Time.deltaTime < endOfInvincibilityTime && Time.time >= endOfInvincibilityTime)
         {
             _renderer.material.SetInteger("_Flash", 0);
+            _spriteAnimator.SetBool("Bite", true);
             _shootable._CanBeTargeted = true;
         }
-
-            
-
-        // Update particle system
-        var forceOverLifetime = _particleSystem.forceOverLifetime;
-        var deltaNormalized = (_previousVelocity - _rigidbody.velocity).normalized;
-        forceOverLifetime.x = new ParticleSystem.MinMaxCurve(deltaNormalized.x * 3);
-        forceOverLifetime.y = new ParticleSystem.MinMaxCurve(deltaNormalized.y * 3);
     }
 
     void FixedUpdate()
     {
-        // Used to calculate the force to apply to particles
-        _previousVelocity = _rigidbody.velocity;
-
-
-
         if (_shotTime + _stunDuration > Time.time || _isSleeping)
         {
             // Push this shootable away from the shooting direction
@@ -173,5 +164,7 @@ public class FollowingShootable : MonoBehaviour, RoomObject
         _shootable._CanBeTargeted = true;
 
         _renderer.material.SetInteger("_Flash", 0);
+
+        _spriteAnimator.SetBool("Bite", false);
     }
 }

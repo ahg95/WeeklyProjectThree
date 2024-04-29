@@ -91,9 +91,11 @@ public class LinearPath : Path
             return transform.position;
 
 
+        // Transform t into the range [0, 1)
         t = t % 1;
         if (t < 0)
             t++;
+
 
 
         var targetDistance = t * _totalDistance;
