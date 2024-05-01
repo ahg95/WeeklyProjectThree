@@ -177,9 +177,9 @@ public class CubicBezierComposite : Path
 
     private void Awake()
     {
-        _offset = transform.position;
-        _angle = transform.rotation.eulerAngles.z;
-        _scale = transform.localScale;
+        //_offset = transform.position;
+        //_angle = transform.rotation.eulerAngles.z;
+        //_scale = transform.localScale;
     }
 
 

@@ -96,7 +96,7 @@ MonoBehaviour:
   _activeShootables: {fileID: 11400000, guid: f65d5f5e2edeb3943bbddb1d360ae04c, type: 2}
   _playerShot: {fileID: 11400000, guid: 1ad1429907fa8da4488e27ebb8546b4d, type: 2}
   _range: 5
-  _maximumAngleError: 25
+  _maximumAngleError: 45
 --- !u!1 &1126578718576461335
 GameObject:
   m_ObjectHideFlags: 0
@@ -106,7 +106,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2349575647661416554}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Lights
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -326,7 +326,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1113799915302495571}
   - component: {fileID: 4799091855686291347}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: AimIndicator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -545,7 +545,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1145322981465712520}
   - component: {fileID: 4610458189501951598}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Large
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -926,7 +926,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2883347228299051255}
   - component: {fileID: 6022642930960603725}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Small
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1167,7 +1167,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5171785965727506762}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Projectiles
   m_TagString: Untagged
   m_Icon: {fileID: 0}

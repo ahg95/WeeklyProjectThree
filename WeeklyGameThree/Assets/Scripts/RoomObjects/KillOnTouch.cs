@@ -9,6 +9,9 @@ public class KillOnTouch : MonoBehaviour
     [SerializeField]
     BoolVariable _playerIsDead;
 
+    [SerializeField]
+    BoolVariable _playerIsDashing;
+
     static int playerLayer = -1;
 
     private void Awake()
@@ -19,7 +22,7 @@ public class KillOnTouch : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.layer != playerLayer || collision.gameObject.tag != "Hitbox" || _playerIsDead.RuntimeValue)
+        if (collision.gameObject.layer != playerLayer || collision.gameObject.tag != "Hitbox" || _playerIsDead.RuntimeValue || _playerIsDashing.RuntimeValue)
             return;
 
         _killedPlayer.Raise();

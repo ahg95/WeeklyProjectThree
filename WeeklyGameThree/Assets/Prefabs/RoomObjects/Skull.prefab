@@ -52,6 +52,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _killedPlayer: {fileID: 11400000, guid: bdd7a943dcf499b49a35c17b61edac07, type: 2}
   _playerIsDead: {fileID: 11400000, guid: 2ba9865bf80fd424b965538ef8e5ce89, type: 2}
+  _playerIsDashing: {fileID: 11400000, guid: cff3f3cc179bf4840a133665a43be6fd, type: 2}
 --- !u!50 &1373369054091217546
 Rigidbody2D:
   serializedVersion: 4
