@@ -33,25 +33,6 @@ public class EvenCubicBezierComposite : Path
         t = _tAdjustedCurve.Evaluate(t);
 
         return _bezierComposite.Evaluate(t);
-
-        /*
-        var lowerSampleIndex = Mathf.Clamp(Mathf.FloorToInt((_numberOfSamples - 1) * t), 0, _numberOfSamples - 2);
-        var upperSampleIndex = lowerSampleIndex + 1;
-
-        var lowerT = ((float)lowerSampleIndex) / (_numberOfSamples - 1);
-        var upperT = ((float)upperSampleIndex) / (_numberOfSamples - 1);
-
-        var alpha = Mathf.InverseLerp(lowerT, upperT, t);
-
-        var lowerTAdjusted = _tAdjusted[lowerSampleIndex];
-        var upperTAdjusted = _tAdjusted[upperSampleIndex];
-
-        var adjustedT = Mathf.Lerp(lowerTAdjusted, upperTAdjusted, alpha);
-
-        Debug.Log($"t: {t}, adjustedT: {adjustedT}, lowerIndex: {lowerSampleIndex}, upperIndex: {upperSampleIndex}");
-
-        return _bezierComposite.Evaluate(adjustedT);
-        */
     }
 
     void SetupIfNecessary()
@@ -102,33 +83,5 @@ public class EvenCubicBezierComposite : Path
         }
 
         _isSetup = true;
-
-
-        /*
-        // Calculate the adjusted values for t
-        // - Setup list
-        _tAdjusted = new float[_numberOfSamples];
-
-        var totalLength = distanceToSamples[distanceToSamples.Count - 1];
-
-        int index = 0;
-
-        // - Calculate adjusted t for all t values
-        for (int i = 0; i < _numberOfSamples; i++)
-        {
-            //var t = 
-
-            //while ()
-            //{
-
-            //}
-
-            var tAdjusted = distanceToSamples[i] / totalLength;
-
-            _tAdjusted[i] = tAdjusted;
-        }
-
-        _isSetup = true;
-        */
     }
 }

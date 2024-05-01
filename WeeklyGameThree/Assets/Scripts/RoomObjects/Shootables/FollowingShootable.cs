@@ -47,7 +47,7 @@ public class FollowingShootable : MonoBehaviour, RoomObject
 
     void Awake()
     {
-        _shootable = GetComponent<Shootable>();
+        _shootable = GetComponentInChildren<Shootable>();
 
 
         _shotTime = -1000;
