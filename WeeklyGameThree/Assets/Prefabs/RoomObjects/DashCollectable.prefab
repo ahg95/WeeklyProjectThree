@@ -201,7 +201,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerCanDash: {fileID: 11400000, guid: c014fd43214fcd74fb593249089b7d45, type: 2}
-  _RemoveWhenCollected: 0
+  _RemoveWhenCollected: 1
 --- !u!95 &3698207827096964893
 Animator:
   serializedVersion: 5

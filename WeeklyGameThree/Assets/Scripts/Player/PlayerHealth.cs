@@ -43,7 +43,6 @@ public class PlayerHealth : MonoBehaviour
 
             if (magicShape.gameObject.activeInHierarchy && magicShape.OverlapPoint((Vector2)transform.position))
             {
-                Debug.Log("KILL!!!");
                 _playerDied.Raise();
                 return;
             }

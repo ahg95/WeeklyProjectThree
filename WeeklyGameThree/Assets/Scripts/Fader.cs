@@ -11,7 +11,6 @@ public class Fader : MonoBehaviour
     public void StartFade()
     {
         _animator.SetTrigger("Fade");
-        Debug.Log("Fade!!!");
     }
 
     public void RaiseEventForEverythingMadeBlack()
