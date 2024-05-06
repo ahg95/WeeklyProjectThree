@@ -5,7 +5,7 @@ Shader "Custom/Player"
         _MainTex ("Texture", 2D) = "white" {}
         _SubTex ("RenderTexture", 2D) = "white" {}
         _FirstOutlineColor("FirstOutlineColor", Color) = (0,0,0,1)
-        _SecondOultineColor("SecondOutlineColor", Color) = (1,1,1,1)
+        _SecondOutlineColor("SecondOutlineColor", Color) = (1,1,1,1)
     }
 
     SubShader 
@@ -42,7 +42,7 @@ Shader "Custom/Player"
             float4 _SubTex_TexelSize;
 
             float4 _FirstOutlineColor;
-            float4 _SecondOultineColor;
+            float4 _SecondOutlineColor;
 
             v2f vert (appdata v)
             {
@@ -81,7 +81,7 @@ Shader "Custom/Player"
                         fixed4 nc = tex2D(_SubTex, i.uv + float2(_SubTex_TexelSize.x*nx, _SubTex_TexelSize.y*ny));
 
                         if (nc.a > 0)
-                            return _SecondOultineColor;
+                            return _SecondOutlineColor;
                     }
 
                     clip(-1);

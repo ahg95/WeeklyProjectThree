@@ -139,7 +139,7 @@ public class PlayerMover : MonoBehaviour
             _dashReleaseTime = Mathf.Clamp(Mathf.Min(_dashReleaseTime, Time.time), earliestReleaseTime, latestReleaseTime);
         }
 
-        _playerIsDashing.RuntimeValue = _dashPressTime <= Time.time && Time.time <= _dashReleaseTime + _transitionDuration;
+        _playerIsDashing.RuntimeValue = _dashPressTime <= Time.time && Time.time <= _dashReleaseTime + _transitionDuration + 0.25f;
     }
 
     private void FixedUpdate()

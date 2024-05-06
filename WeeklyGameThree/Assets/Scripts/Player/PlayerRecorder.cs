@@ -51,6 +51,8 @@ public class PlayerRecorder : MonoBehaviour
 
         _animator.SetFloat("MovementSpeed", movement.magnitude);
 
+
+
         // Rotate player model
         if (!_isDying)
         {

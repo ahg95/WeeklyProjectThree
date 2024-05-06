@@ -1,5 +1,5 @@
 using UnityEngine;
-using Unity.VisualScripting;
+using System.Collections.Generic;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -13,21 +13,43 @@ public class CircularPath : Path
         Vector3 result = transform.position;
 
         result += Mathf.Sin(t * 2 * Mathf.PI) * Vector3.up * transform.localScale.y;
-        result += Mathf.Cos(t * 2 * Mathf.PI) * Vector3.right * transform.localScale.x;
+        result += Mathf.Cos(t * 2 * Mathf.PI) * Vector3.left * transform.localScale.x;
 
         return result;
     }
 
 #if UNITY_EDITOR
-    [CustomEditor(typeof(CircularPath)), CanEditMultipleObjects]
-    public class CircularPathEditor : Editor
+
+    private void OnEnable()
     {
-        [DrawGizmo(GizmoType.Selected)]
-        static void DrawGizmo(CircularPath circularPath, GizmoType gizmo)
+        SceneView.duringSceneGui += OnSceneGUI;
+    }
+
+    private void OnDisable()
+    {
+        SceneView.duringSceneGui -= OnSceneGUI;
+    }
+
+    private void OnSceneGUI(SceneView sceneView)
+    {
+        Handles.color = Color.blue;
+
+        var xScale = transform.localScale.x;
+        var yScale = transform.localScale.y;
+
+        int numberOfPoints =  8 + Mathf.FloorToInt((xScale + yScale) / 2) * 8;
+
+        List<Vector3> points = new List<Vector3>(numberOfPoints);
+
+        for (int i = 0; i < numberOfPoints; i++)
         {
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(circularPath.transform.position, circularPath.transform.localScale.x);
+            var x = transform.position.x + Mathf.Cos(((float)i) / (numberOfPoints - 1) * 2 * Mathf.PI) * xScale;
+            var y = transform.position.y + Mathf.Sin(((float)i) / (numberOfPoints - 1) * 2 * Mathf.PI) * yScale;
+
+            points.Add(new Vector3(x, y, 0));
         }
+
+        Handles.DrawPolyLine(points.ToArray());
     }
 #endif
 }

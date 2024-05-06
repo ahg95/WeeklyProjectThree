@@ -103,4 +103,5 @@ Material:
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
     - _SecondOultineColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SecondOutlineColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
