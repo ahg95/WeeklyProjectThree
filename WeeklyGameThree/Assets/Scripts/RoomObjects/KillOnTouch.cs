@@ -27,4 +27,12 @@ public class KillOnTouch : MonoBehaviour
 
         _killedPlayer.Raise();
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.layer != playerLayer || _playerIsDead.RuntimeValue || _playerIsDashing.RuntimeValue)
+            return;
+
+        _killedPlayer.Raise();
+    }
 }

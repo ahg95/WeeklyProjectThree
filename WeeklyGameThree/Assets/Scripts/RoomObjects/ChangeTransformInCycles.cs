@@ -20,6 +20,7 @@ public class ChangeTransformInCycles : MonoBehaviour, RoomObject
     bool _movesBackwards;
     [SerializeField]
     Path _path;
+    public Vector3 _MovementPositionOffset;
     [SerializeField]
     float _movementCycles = 1;
     [SerializeField]
@@ -50,6 +51,13 @@ public class ChangeTransformInCycles : MonoBehaviour, RoomObject
     float _timer = 0;
     const float GLOBALCYCLETIME = 5f;
 
+    Rigidbody2D _rigidbody;
+
+    private void Awake()
+    {
+        _rigidbody = GetComponent<Rigidbody2D>();
+    }
+
     private void Update()
     {
         _timer += Time.deltaTime * _timeScale.RuntimeValue;
@@ -70,7 +78,12 @@ public class ChangeTransformInCycles : MonoBehaviour, RoomObject
             if (_movesBackwards)
                 t = 1 - t;
 
-            transform.position = _path.Evaluate(t);
+            var nextPosition = _path.Evaluate(t) + _MovementPositionOffset;
+
+            if (_rigidbody != null)
+                _rigidbody.MovePosition(nextPosition);
+            else
+                transform.position = nextPosition;
         }
     }
 
@@ -122,6 +135,7 @@ public class ChangeTransformInCycles : MonoBehaviour, RoomObject
         SerializedProperty _movesProperty;
         SerializedProperty _movesBackwardsProperty;
         SerializedProperty _pathProperty;
+        SerializedProperty _movementPositionOffsetProperty;
         SerializedProperty _movementCyclesProperty;
         SerializedProperty _movementOffsetProperty;
 
@@ -186,6 +200,17 @@ public class ChangeTransformInCycles : MonoBehaviour, RoomObject
 
                 EditorGUILayout.PropertyField(_movesBackwardsProperty);
                 EditorGUILayout.PropertyField(_pathProperty);
+
+                EditorGUI.BeginChangeCheck();
+                var targetScript = (ChangeTransformInCycles)target;
+                var movementPositionOffset = EditorGUILayout.Vector3Field("Position Offset", targetScript._MovementPositionOffset);
+
+                if (EditorGUI.EndChangeCheck())
+                {
+                    targetScript._MovementPositionOffset = movementPositionOffset;
+                    EditorUtility.SetDirty(targetScript);
+                }
+
                 EditorGUILayout.Slider(_movementCyclesProperty, 0.125f, 10);
                 EditorGUILayout.Slider(_movementOffsetProperty, 0f, 1f);
 
