@@ -327,6 +327,8 @@ public class CubicBezierCompositeEditor : Editor
             var composite = (CubicBezierComposite)target;
 
             composite.RoundCurvePointPositions();
+
+            EditorUtility.SetDirty(composite);
         }
     }
 }

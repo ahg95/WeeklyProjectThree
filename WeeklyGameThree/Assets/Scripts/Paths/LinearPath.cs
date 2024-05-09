@@ -264,6 +264,8 @@ public class LinearPath : Path
                 var composite = (LinearPath)target;
 
                 composite.RoundPointPositions();
+
+                EditorUtility.SetDirty(composite);
             }
         }
     }

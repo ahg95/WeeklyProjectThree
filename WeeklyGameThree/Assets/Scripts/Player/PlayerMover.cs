@@ -147,7 +147,15 @@ public class PlayerMover : MonoBehaviour
         // Convert the movement input to a velocity
         // - Calculate the next velocity if the player was dashing and if the player was moving
         var movementVelocity = CalculateNextVelocity(_movementInput, _rigidbody.velocity, _walkMaxSpeed, _walkAcceleration);
-        var dashVelocity = CalculateNextVelocity(_movementInput, _rigidbody.velocity, _dashMaxSpeed, _dashAcceleration);
+
+        Vector2 dashInput = _movementInput;
+
+        if (dashInput == Vector2.zero)
+            dashInput = _rigidbody.velocity.normalized;
+        else
+            dashInput = dashInput.normalized;
+
+        var dashVelocity = CalculateNextVelocity(dashInput, _rigidbody.velocity, _dashMaxSpeed, _dashAcceleration);
 
         var transitionProgress = Mathf.InverseLerp(_dashReleaseTime, _dashReleaseTime + _transitionDuration, Time.time);
 
