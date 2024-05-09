@@ -534,7 +534,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.25
+  m_Radius: 0.3
 --- !u!1 &5130139953718685332
 GameObject:
   m_ObjectHideFlags: 0
@@ -842,6 +842,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5116223567288111350}
   - component: {fileID: 1786682002322408007}
+  - component: {fileID: 7043960194514079057}
   m_Layer: 6
   m_Name: Sprite
   m_TagString: Untagged
@@ -916,6 +917,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 1
+--- !u!114 &7043960194514079057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7068353679285763286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 279ff8a2403557c45b87d1a8b99053b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerImageMaterial: {fileID: 2100000, guid: df067aa9488622c4facb1f80079cf711, type: 2}
+  _playerIsDashing: {fileID: 11400000, guid: cff3f3cc179bf4840a133665a43be6fd, type: 2}
+  _dashOutlineColour: {r: 0, g: 0.9400835, b: 1, a: 1}
 --- !u!1 &7657925384339498743
 GameObject:
   m_ObjectHideFlags: 0

@@ -19,7 +19,12 @@ public class CurvedPathRenderer : MonoBehaviour
 
             for (int i = 0; i < _numberOfSamples; i++)
             {
-                var sample = _path.Evaluate((float)i / (_numberOfSamples - 1));
+                var t = (float)i / (_numberOfSamples - 1);
+
+                if (i == _numberOfSamples - 1)
+                    t = 0.9999f;
+
+                var sample = _path.Evaluate(t);
 
                 lineRenderer.SetPosition(i, sample);
             }

@@ -51,6 +51,10 @@ public class EvenCubicBezierComposite : Path
         {
             var t = (float)i / (_numberOfSamples - 1);
 
+            // t should never be equal to 1 or it will not calculate paths correctly that are not cyclic
+            if (i == _numberOfSamples - 1)
+                t = 0.9999f;
+
             var sample = _bezierComposite.Evaluate(t);
 
             if (i == 0)
