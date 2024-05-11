@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1373369054091217546}
   - component: {fileID: 2853349658568158203}
   - component: {fileID: 5280943923791500946}
+  - component: {fileID: 1860704897857009618}
   m_Layer: 0
   m_Name: Skull
   m_TagString: Untagged
@@ -132,6 +133,7 @@ MonoBehaviour:
   _moves: 1
   _movesBackwards: 0
   _path: {fileID: 0}
+  _MovementPositionOffset: {x: 0, y: 0, z: 0}
   _movementCycles: 1
   _movementOffset: 0
   _rotates: 0
@@ -143,6 +145,24 @@ MonoBehaviour:
   _defaultScale: 0
   _changedScale: 0
   _scalingOffset: 0
+--- !u!114 &1860704897857009618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1135063854689278424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55e466f3b14e34c408422fc9a33bd306, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bouncer: {fileID: 6645280422472933052}
+  _frequency: 5
+  _duration: 1
+  _amplitude: 0.25
+  _verticalPhaseOffset: 0
+  _collisionFactor: 0.05
 --- !u!1 &3362240462302420996
 GameObject:
   m_ObjectHideFlags: 0
