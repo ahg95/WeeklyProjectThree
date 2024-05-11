@@ -7,7 +7,15 @@ public class DashCollectable : MonoBehaviour, RoomObject
     BoolVariable _playerCanDash;
 
     [SerializeField]
-    bool _RemoveWhenCollected;
+    Animator _animator;
+
+    [SerializeField]
+    ParticleSystem _defaultParticles;
+
+    [SerializeField]
+    ParticleSystem _burstParticles;
+
+    bool _isCollected;
 
     static int _playerLayer = -1;
 
@@ -15,21 +23,37 @@ public class DashCollectable : MonoBehaviour, RoomObject
     {
         if (_playerLayer == -1)
             _playerLayer = LayerMask.NameToLayer("Player");
+
+        _burstParticles.Stop(false, ParticleSystemStopBehavior.StopEmittingAndClear);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.layer == _playerLayer && !_playerCanDash.RuntimeValue)
-        {
-            _playerCanDash.RuntimeValue = true;
+        if (collision.gameObject.layer != _playerLayer || _playerCanDash.RuntimeValue || _isCollected)
+            return;
 
-            gameObject.SetActive(!_RemoveWhenCollected);
-        }
+        _playerCanDash.RuntimeValue = true;
+
+        _defaultParticles.Stop(false, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+        _burstParticles.Stop();
+        _burstParticles.Play();
+
+        _animator.SetBool("Collected", true);
+
+        _isCollected = true;
     }
 
     public void ResetRoomObject()
     {
-        gameObject.SetActive(true);
         _playerCanDash.RuntimeValue = false;
+
+        _defaultParticles.Play();
+
+        _burstParticles.Stop(false, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+        _animator.SetBool("Collected", false);
+
+        _isCollected = false;
     }
 }
