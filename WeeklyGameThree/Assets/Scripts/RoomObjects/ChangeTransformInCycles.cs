@@ -95,7 +95,10 @@ public class ChangeTransformInCycles : MonoBehaviour, RoomObject
 
             angle = _rotatesCounterclockwise ? angle : -angle;
 
-            transform.rotation = Quaternion.Euler(0, 0, angle);
+            if (_rigidbody != null)
+                _rigidbody.MoveRotation(Quaternion.Euler(0, 0, angle));
+            else
+                transform.rotation = Quaternion.Euler(0, 0, angle);
         }
     }
 

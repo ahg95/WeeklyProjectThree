@@ -3,8 +3,7 @@ using UnityEngine;
 
 public class EvenCubicBezierComposite : Path
 {
-    [SerializeField]
-    CubicBezierComposite _bezierComposite;
+    public CubicBezierComposite _BezierComposite;
 
     [SerializeField, Range(2, 100)]
     int _numberOfSamples;
@@ -14,6 +13,17 @@ public class EvenCubicBezierComposite : Path
 
     [SerializeField, HideInInspector]
     AnimationCurve _tAdjustedCurve;
+
+    public float TotalLength
+    {
+        get {
+            SetupIfNecessary();
+
+            return _totalLength;
+        }
+    }
+
+    float _totalLength;
 
     bool _isSetup;
 
@@ -32,7 +42,7 @@ public class EvenCubicBezierComposite : Path
 
         t = _tAdjustedCurve.Evaluate(t);
 
-        return _bezierComposite.Evaluate(t);
+        return _BezierComposite.Evaluate(t);
     }
 
     void SetupIfNecessary()
@@ -55,7 +65,7 @@ public class EvenCubicBezierComposite : Path
             if (i == _numberOfSamples - 1)
                 t = 0.9999f;
 
-            var sample = _bezierComposite.Evaluate(t);
+            var sample = _BezierComposite.Evaluate(t);
 
             if (i == 0)
             {
@@ -72,14 +82,13 @@ public class EvenCubicBezierComposite : Path
 
 
 
-
-        var totalLength = distanceToSamples[distanceToSamples.Count - 1];
+        _totalLength = distanceToSamples[distanceToSamples.Count - 1];
 
         _tAdjustedCurve = new AnimationCurve();
 
         for (int i = 0; i < _numberOfSamples; i++)
         {
-            var lengthProgress = distanceToSamples[i] / totalLength;
+            var lengthProgress = distanceToSamples[i] / _totalLength;
 
             var tAdjusted = ((float)i) / (_numberOfSamples - 1);
 

@@ -27,6 +27,26 @@ public class CubicBezierComposite : Path
     [SerializeField, HideInInspector]
     Vector3 _scale = Vector3.one;
 
+    public List<Vector3> Points
+    {
+        get
+        {
+            var points = new List<Vector3>();
+
+            for (int i = 0; i < _Curves.Count; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    var point = _Curves[i]._Points[j];
+
+                    points.Add(point);
+                }
+            }
+
+            return points;
+        }
+    }
+
 #if UNITY_EDITOR
     private void OnEnable()
     {

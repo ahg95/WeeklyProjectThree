@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 12, y: 12, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -51,6 +51,7 @@ MonoBehaviour:
   _moves: 0
   _movesBackwards: 0
   _path: {fileID: 0}
+  _MovementPositionOffset: {x: 0, y: 0, z: 0}
   _movementCycles: 1
   _movementOffset: 0.282
   _rotates: 0
@@ -117,7 +118,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 24e49927621bb8647b3b58a61aeb226c, type: 2}
+  - {fileID: 2100000, guid: 077e4cb09d2354840a752d6bf51c7a85, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -138,11 +139,11 @@ SpriteRenderer:
   m_SortingLayerID: 1597174841
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 0e138ce5cad7e2c41a1d0c78c8706be6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b51730e2f23e8414385b6b1c4450b306, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 0
+  m_DrawMode: 2
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
